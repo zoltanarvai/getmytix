@@ -8,11 +8,11 @@ if (!process.env.MONGODB_PASSWORD) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_PASSWORD"');
 }
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+if (!process.env.MONGODB_URL) {
+  throw new Error('Invalid/Missing environment variable: "MONGODB_URL"');
 }
 
-const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URI}`;
+const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URL}`;
 const options = {};
 
 let client;
