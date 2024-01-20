@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
@@ -14,20 +13,57 @@ export const config = {
   ],
 };
 
-export function middleware(request: NextRequest) {
-  const host = request.headers.get("host");
+export default async function middleware(req: NextRequest) {
+  const url = req.nextUrl;
 
-  if (host) {
-    // Extract the subdomain from the host header
-    const subdomain = host.split(".")[0];
+  // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
+  let hostname = req.headers
+    .get("host")!
+    .replace(".localhost:3000", `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
 
-    // Check if the subdomain corresponds to an event
-    if (subdomain === "sailwithus") {
-      // Rewrite the request to the event's page
-      return NextResponse.rewrite(new URL("/events/sailwithus", request.url));
-    }
+  // special case for Vercel preview deployment URLs
+  if (
+    hostname.includes("---") &&
+    hostname.endsWith(`.${process.env.NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX}`)
+  ) {
+    hostname = `${hostname.split("---")[0]}.${
+      process.env.NEXT_PUBLIC_ROOT_DOMAIN
+    }`;
   }
 
-  // Continue with the regular flow if no subdomain logic needs to be applied
-  return NextResponse.next();
+  const searchParams = req.nextUrl.searchParams.toString();
+  // Get the pathname of the request (e.g. /, /about, /blog/first-post)
+  const path = `${url.pathname}${
+    searchParams.length > 0 ? `?${searchParams}` : ""
+  }`;
+
+  // rewrites for event pages
+  const [subDomain, domain, rootDomain] = hostname.split(".");
+  if (
+    `${domain}.${rootDomain}` === process.env.NEXT_PUBLIC_ROOT_DOMAIN &&
+    subDomain !== "www"
+  ) {
+    console.log("rewriting to event page", "/events/${subDomain}", req.url);
+    return NextResponse.rewrite(new URL(`/events/${subDomain}`, req.url));
+  }
+
+  // special case for `vercel.pub` domain
+  if (hostname === "vercel.pub") {
+    return NextResponse.redirect(
+      "https://vercel.com/blog/platforms-starter-kit"
+    );
+  }
+
+  // rewrite root application to `/home` folder
+  if (
+    hostname === "localhost:3000" ||
+    hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
+  ) {
+    return NextResponse.rewrite(
+      new URL(`/home${path === "/" ? "" : path}`, req.url)
+    );
+  }
+
+  // rewrite everything else to `/[domain]/[slug] dynamic route
+  return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
