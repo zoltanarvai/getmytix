@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { getDB } from "../mongodb";
+import { ObjectId } from "mongodb";
+import { Domain, Optional } from "../types";
 
 const shoppingCartSchema = z.object({
+  _id: z.instanceof(ObjectId),
   sessionId: z.string(),
   subdomain: z.string(),
   tickets: z.record(z.number()),
@@ -12,7 +15,7 @@ export type ShoppingCart = z.infer<typeof shoppingCartSchema>;
 export async function getShoppingCart(
   sessionId: string,
   subdomain: string
-): Promise<ShoppingCart | null> {
+): Promise<Optional<Domain<ShoppingCart>>> {
   try {
     const db = await getDB();
     const document = await db.collection("shoppingCarts").findOne({
@@ -25,9 +28,12 @@ export async function getShoppingCart(
       return null;
     }
 
-    const shoppingCart = shoppingCartSchema.parse(document);
+    const { _id, ...rest } = shoppingCartSchema.parse(document);
 
-    return shoppingCart;
+    return {
+      id: document._id.toHexString(),
+      ...rest,
+    };
   } catch (error) {
     console.error("Could not retrieve shopping cart", error);
     throw error;
@@ -37,7 +43,7 @@ export async function getShoppingCart(
 export async function createShoppingCart(
   sessionId: string,
   subdomain: string
-): Promise<ShoppingCart> {
+): Promise<Domain<ShoppingCart>> {
   try {
     const shoppingCart = {
       sessionId: sessionId,
@@ -46,9 +52,14 @@ export async function createShoppingCart(
     };
 
     const db = await getDB();
-    await db.collection("shoppingCarts").insertOne(shoppingCart);
+    const document = await db
+      .collection("shoppingCarts")
+      .insertOne(shoppingCart);
 
-    return shoppingCart;
+    return {
+      id: document.insertedId.toHexString(),
+      ...shoppingCart,
+    };
   } catch (error) {
     console.error("Could not create shopping cart", error);
     throw error;
@@ -57,7 +68,7 @@ export async function createShoppingCart(
 
 export async function updateShoppingCart(
   shoppingCart: ShoppingCart
-): Promise<ShoppingCart> {
+): Promise<Domain<ShoppingCart>> {
   try {
     const db = await getDB();
     const document = await db.collection("shoppingCarts").findOneAndUpdate(
@@ -72,9 +83,12 @@ export async function updateShoppingCart(
       throw new Error("Shopping cart not found");
     }
 
-    const updatedShoppingCart = shoppingCartSchema.parse(document);
+    const { _id, ...rest } = shoppingCartSchema.parse(document);
 
-    return updatedShoppingCart;
+    return {
+      id: document._id.toHexString(),
+      ...rest,
+    };
   } catch (error) {
     console.error("Could not update shopping cart", error);
     throw error;

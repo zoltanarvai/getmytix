@@ -1,11 +1,11 @@
 import { z } from "zod";
+import { ObjectId } from "mongodb";
 import { getDB } from "@/lib/mongodb";
 import { ticketSchema } from "./tickets";
-import { ObjectId } from "mongodb";
+import { Domain, Optional } from "../types";
 
 export const eventSchema = z.object({
   _id: z.instanceof(ObjectId),
-  id: z.string(),
   name: z.string(),
   description: z.string(),
   longDescription: z.string(),
@@ -20,11 +20,11 @@ export const eventSchema = z.object({
 
 export type Event = z.infer<typeof eventSchema>;
 
-export async function getEvent(subdomain: string): Promise<Event | null> {
+export async function getEvent(
+  subdomain: string
+): Promise<Optional<Domain<Event>>> {
   try {
     const db = await getDB();
-    //
-    // Then you can execute queries against your database like so:
     const document = await db.collection("events").findOne({
       subdomain: subdomain,
     });
@@ -34,14 +34,12 @@ export async function getEvent(subdomain: string): Promise<Event | null> {
       return null;
     }
 
-    const event = eventSchema.parse({
-      ...document,
+    const { _id, ...rest } = eventSchema.parse(document);
+
+    return {
       id: document._id.toHexString(),
-    });
-
-    console.log(event);
-
-    return event;
+      ...rest,
+    };
   } catch (e) {
     console.error("Could not get event", e);
     return null;

@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { events, shoppingCarts } from "@/lib/domain";
 import { getSessionId } from "@/lib/domain/session";
-import { ShoppingCart } from "@/components/organisms";
-import { Button } from "@/components/ui/button";
+import { ShoppingCart, SubmitOrder } from "@/components/organisms";
 
 type CheckoutProps = {
   params: {
@@ -43,11 +41,7 @@ export default async function Checkout({
           }}
         />
 
-        <Link className="mt-8" href={`checkout`}>
-          <Button className="text-xl font-bold rounded-full px-6 py-6">
-            Fizetés
-          </Button>
-        </Link>
+        <SubmitOrder sessionId={sessionId} subdomain={event.subdomain} />
       </section>
     </main>
   );

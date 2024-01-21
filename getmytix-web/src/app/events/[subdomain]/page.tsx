@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Bars4Icon, ClockIcon, MapPinIcon } from "@heroicons/react/24/solid";
 import { getEvent } from "@/lib/domain/events";
 import { StartBuyingSession } from "@/components/organisms";
 import { EventDetailBox } from "@/components/molecules";
-import { Bars4Icon, ClockIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
 type EventProps = {
   params: {

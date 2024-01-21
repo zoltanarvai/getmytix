@@ -15,14 +15,14 @@ export async function createSession(
 
   const { email } = request;
 
-  // Make sure the user exists
-  // TODO do something with the session
-  let user = await users.getUser(email);
+  const user = await users.getUser(email);
+  let userId = user?.id;
+
   if (!user) {
-    await users.createUser(email);
+    userId = await users.createUser(email);
   }
 
-  const sessionId = await session.createSessionId();
+  const sessionId = await session.createSessionId(userId!);
 
   return sessionId;
 }
