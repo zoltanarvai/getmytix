@@ -1,3 +1,4 @@
+"use server";
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
@@ -44,7 +45,9 @@ export default async function middleware(req: NextRequest) {
     subDomain !== "www"
   ) {
     console.log("rewriting to event page", "/events/${subDomain}", req.url);
-    return NextResponse.rewrite(new URL(`/events/${subDomain}`, req.url));
+    return NextResponse.rewrite(
+      new URL(`/events/${subDomain}${path === "/" ? "" : path}`, req.url)
+    );
   }
 
   // special case for `vercel.pub` domain
