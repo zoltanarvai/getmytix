@@ -67,7 +67,7 @@ export async function createShoppingCart(
 }
 
 export async function updateShoppingCart(
-  shoppingCart: ShoppingCart
+  shoppingCart: Domain<ShoppingCart>
 ): Promise<Domain<ShoppingCart>> {
   try {
     const db = await getDB();

@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { shoppingCarts } from "@/lib/domain";
+import { Domain } from "@/lib/types";
 
 const updateShoppingCartPropsSchema = z.object({
   sessionId: z.string(),
@@ -14,7 +15,7 @@ type UpdateShoppingCartProps = z.infer<typeof updateShoppingCartPropsSchema>;
 export async function createShoppingCart(
   sessionId: string,
   subdomain: string
-): Promise<shoppingCarts.ShoppingCart> {
+): Promise<Domain<shoppingCarts.ShoppingCart>> {
   const shoppingCart = await shoppingCarts.createShoppingCart(
     sessionId,
     subdomain
@@ -25,7 +26,7 @@ export async function createShoppingCart(
 
 export async function addTicketToShoppingCart(
   updateShoppingCartProps: UpdateShoppingCartProps
-): Promise<shoppingCarts.ShoppingCart> {
+): Promise<Domain<shoppingCarts.ShoppingCart>> {
   const validatesShoppingCart = updateShoppingCartPropsSchema.parse(
     updateShoppingCartProps
   );
