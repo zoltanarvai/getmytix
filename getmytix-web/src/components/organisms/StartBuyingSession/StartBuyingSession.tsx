@@ -18,11 +18,15 @@ import { createSession } from "@/app/server-actions/session";
 
 const formSchema = z.object({
   email: z.string().email({
-    message: "Helytelen email cim formatum",
+    message: "Helytelen e-mail cím formátum",
   }),
 });
 
-export function StartBuyingSession() {
+type StartBuyingSessionProps = {
+  hideTitle?: boolean;
+};
+
+export function StartBuyingSession({ hideTitle }: StartBuyingSessionProps) {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,7 +46,7 @@ export function StartBuyingSession() {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <h1 className="text-2xl font-bold">Szeretnek csatlakozni!</h1>
+      {!hideTitle && <h1 className="text-2xl font-bold">Csatlakozom!</h1>}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -55,9 +59,9 @@ export function StartBuyingSession() {
               <FormItem>
                 <FormControl>
                   <Input
-                    placeholder="e-mail cimed"
-                    type="email"
-                    className="w-64"
+                    placeholder="add meg az e-mail címed"
+                    // type="email"
+                    className="w-96 text-center text-md"
                     {...field}
                   />
                 </FormControl>
@@ -67,9 +71,9 @@ export function StartBuyingSession() {
           />
           <Button
             type="submit"
-            className="text-2xl font-bold rounded-full px-6 py-6"
+            className="text-xl font-bold rounded-full px-6 py-6"
           >
-            Jegyvasarlas
+            Jegyvásárlás
           </Button>
         </form>
       </Form>

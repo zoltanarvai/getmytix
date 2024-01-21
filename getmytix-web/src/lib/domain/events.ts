@@ -7,10 +7,14 @@ export const eventSchema = z.object({
   _id: z.instanceof(ObjectId),
   id: z.string(),
   name: z.string(),
-  subdomain: z.string(),
   description: z.string(),
-  eventStart: z.string(),
-  eventEnd: z.string(),
+  longDescription: z.string(),
+  logo: z.string(),
+  banner: z.string(),
+  subdomain: z.string(),
+  startDateTime: z.string(),
+  endDateTime: z.string().optional(),
+  location: z.string(),
   ticketTypes: z.array(ticketSchema),
 });
 

@@ -5,7 +5,7 @@ import { shoppingCarts } from "@/lib/domain";
 
 const updateShoppingCartPropsSchema = z.object({
   sessionId: z.string(),
-  eventId: z.string(),
+  subdomain: z.string(),
   tickets: z.record(z.number()),
 });
 
@@ -13,11 +13,11 @@ type UpdateShoppingCartProps = z.infer<typeof updateShoppingCartPropsSchema>;
 
 export async function createShoppingCart(
   sessionId: string,
-  eventId: string
+  subdomain: string
 ): Promise<shoppingCarts.ShoppingCart> {
   const shoppingCart = await shoppingCarts.createShoppingCart(
     sessionId,
-    eventId
+    subdomain
   );
 
   return shoppingCart;
@@ -30,13 +30,16 @@ export async function addTicketToShoppingCart(
     updateShoppingCartProps
   );
 
-  const { tickets, sessionId, eventId } = validatesShoppingCart;
+  const { tickets, sessionId, subdomain } = validatesShoppingCart;
 
   if (tickets.length === 0) {
     throw new Error("No tickets to add");
   }
 
-  const shoppingCart = await shoppingCarts.getShoppingCart(sessionId, eventId);
+  const shoppingCart = await shoppingCarts.getShoppingCart(
+    sessionId,
+    subdomain
+  );
 
   if (!shoppingCart) {
     throw new Error("Shopping cart not found");

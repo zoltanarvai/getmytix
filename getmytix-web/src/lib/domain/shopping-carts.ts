@@ -3,7 +3,7 @@ import { getDB } from "../mongodb";
 
 const shoppingCartSchema = z.object({
   sessionId: z.string(),
-  eventId: z.string(),
+  subdomain: z.string(),
   tickets: z.record(z.number()),
 });
 
@@ -11,13 +11,13 @@ export type ShoppingCart = z.infer<typeof shoppingCartSchema>;
 
 export async function getShoppingCart(
   sessionId: string,
-  eventId: string
+  subdomain: string
 ): Promise<ShoppingCart | null> {
   try {
     const db = await getDB();
     const document = await db.collection("shoppingCarts").findOne({
       sessionId: sessionId,
-      eventId: eventId,
+      subdomain: subdomain,
     });
 
     if (!document) {
@@ -36,12 +36,12 @@ export async function getShoppingCart(
 
 export async function createShoppingCart(
   sessionId: string,
-  eventId: string
+  subdomain: string
 ): Promise<ShoppingCart> {
   try {
     const shoppingCart = {
       sessionId: sessionId,
-      eventId: eventId,
+      subdomain: subdomain,
       tickets: {},
     };
 
@@ -60,12 +60,13 @@ export async function updateShoppingCart(
 ): Promise<ShoppingCart> {
   try {
     const db = await getDB();
-    const document = await db
-      .collection("shoppingCarts")
-      .findOneAndUpdate(
-        { sessionId: shoppingCart.sessionId, eventId: shoppingCart.eventId },
-        { $set: shoppingCart }
-      );
+    const document = await db.collection("shoppingCarts").findOneAndUpdate(
+      {
+        sessionId: shoppingCart.sessionId,
+        subdomain: shoppingCart.subdomain,
+      },
+      { $set: shoppingCart }
+    );
 
     if (!document) {
       throw new Error("Shopping cart not found");

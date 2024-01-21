@@ -1,18 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
-import { Montserrat } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-export const fontMontserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-});
+import { GeistSans } from "geist/font/sans";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "GetMyTix",
@@ -27,12 +16,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
+        className={`min-h-screen bg-background antialiased ${GeistSans.className}`}
       >
+        <div
+          className={`ml-4 mt-4 tracking-tight antialiased font-bold text-lg ${GeistSans.className}`}
+        >
+          GetMyTix.io
+        </div>
         {children}
+        <Toaster />
       </body>
     </html>
   );
