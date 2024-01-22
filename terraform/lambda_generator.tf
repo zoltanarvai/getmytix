@@ -27,7 +27,24 @@ data "aws_iam_policy_document" "lambda_generator_logs" {
   }
 }
 
-resource "aws_iam_role" "lambda_augmented_cao_to_sns" {
+data "aws_iam_policy_document" "lambda_generator_sqs" {
+  statement {
+    effect  = "Allow"
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:SendMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl"
+    ]
+    resources = [
+      aws_sqs_queue.ticket_print_dlq.arn,
+      aws_sqs_queue.ticket_print_queue.arn
+    ]
+  }
+}
+
+resource "aws_iam_role" "lambda_generator" {
   name               = local.lambda_generator_function_name
   assume_role_policy = data.aws_iam_policy_document.lambda_generator_assume_role.json
 }
@@ -37,20 +54,30 @@ resource "aws_iam_policy" "lambda_generator_logs" {
   policy = data.aws_iam_policy_document.lambda_generator_logs.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_augmented_cao_to_sns_logs" {
-  role       = aws_iam_role.lambda_augmented_cao_to_sns.name
+resource "aws_iam_policy" "lambda_generator_sqs" {
+  name   = "${local.lambda_generator_function_name}-sqs"
+  policy = data.aws_iam_policy_document.lambda_generator_sqs.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_generator_logs" {
+  role       = aws_iam_role.lambda_generator.name
   policy_arn = aws_iam_policy.lambda_generator_logs.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_generator_sqs" {
+  role       = aws_iam_role.lambda_generator.name
+  policy_arn = aws_iam_policy.lambda_generator_sqs.arn
+}
+
 resource "aws_cloudwatch_log_group" "lambda_generator" {
-  name              = "/aws/lambda/${aws_lambda_function.augmented_cao_to_sns.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.lambda_generator.function_name}"
   retention_in_days = 14
 }
 
-resource "aws_lambda_function" "augmented_cao_to_sns" {
+resource "aws_lambda_function" "lambda_generator" {
   function_name = local.lambda_generator_function_name
 
-  role = aws_iam_role.lambda_augmented_cao_to_sns.arn
+  role = aws_iam_role.lambda_generator.arn
 
   filename         = local.lambda_generator_source_file
   handler          = local.lambda_generator_function_handler
@@ -58,6 +85,18 @@ resource "aws_lambda_function" "augmented_cao_to_sns" {
 
   runtime = "python3.11"
 
+  environment {
+    variables = {
+      TICKET_PRINT_QUEUE_DLQ_URL = aws_sqs_queue.ticket_print_dlq.url
+    }
+  }
+
   memory_size = 1024
   timeout     = 60
+}
+
+resource "aws_lambda_event_source_mapping" "ticket_print_queue_generator_lambda" {
+  event_source_arn = aws_sqs_queue.ticket_print_queue.arn
+  function_name    = aws_lambda_function.lambda_generator.arn
+  batch_size       = 1
 }
