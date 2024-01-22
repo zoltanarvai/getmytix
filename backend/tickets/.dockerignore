@@ -1,0 +1,17 @@
+# Maven/Gradle build directories
+target/
+
+##IntelliJ IDEA
+.idea/
+.run/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Mac OS
+.DS_Store
+
+.pytest_cache/*

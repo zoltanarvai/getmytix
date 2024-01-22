@@ -1,0 +1,15 @@
+.DS_STORE
+
+# Ignore IDE specific configuration
+.idea/
+.vscode/
+
+# Ignore binaries
+*.jar
+
+# Ignore Python specific cache files
+__pycache__
+*.py[cod]
+
+outputs.json
+
