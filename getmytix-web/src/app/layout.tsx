@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { Toaster } from "@/components/ui/toaster";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "GetMyTix",
@@ -18,11 +19,13 @@ export default function RootLayout({
       <body
         className={`min-h-screen bg-background antialiased ${GeistSans.className}`}
       >
-        <div
-          className={`ml-4 mt-4 tracking-tight antialiased font-bold text-lg ${GeistSans.className}`}
-        >
-          GetMyTix.io
-        </div>
+        <Image
+          src="/logo.jpeg"
+          className={`ml-4 mt-4`}
+          width={160}
+          height={160}
+          alt="GetMyTix Logo"
+        />
         {children}
         <Toaster />
       </body>
