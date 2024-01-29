@@ -46,6 +46,7 @@ export function CustomerDetailsForm({
   });
 
   const onSubmit = async (data: CustomerData) => {
+    console.log(">>> here");
     onCustomerDetailsSubmitted(data);
   };
 
@@ -61,7 +62,11 @@ export function CustomerDetailsForm({
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(x) => {
+                console.log(">>> here", x.target);
+                debugger;
+                form.handleSubmit(onSubmit)(x);
+              }}
               className="flex flex-col gap-4"
             >
               <TwoColumnLayout>
@@ -146,6 +151,23 @@ export function CustomerDetailsForm({
                         <FormControl>
                           <Input
                             placeholder="Irányítószám"
+                            className="md:w-96 w-80 text-md"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Város</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Város"
                             className="md:w-96 w-80 text-md"
                             {...field}
                           />

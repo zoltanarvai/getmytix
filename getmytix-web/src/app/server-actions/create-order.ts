@@ -1,7 +1,6 @@
 "use server";
 
-import { CreateOrder } from "@/lib/domain/orders";
-import { orders, session, users } from "@/lib/domain";
+import { orders, payment, session, users, events } from "@/lib/domain";
 import { z } from "zod";
 
 const createOrderSchema = z.object({
@@ -15,10 +14,9 @@ const createOrderSchema = z.object({
     country: z.string(),
     phone: z.string().optional(),
   }),
-  shoppingCart: z.object({
-    sessionId: z.string(),
-    subdomain: z.string(),
-  }),
+  sessionId: z.string(),
+  subdomain: z.string(),
+  shoppingCartId: z.string(),
 });
 
 type CreateOrderProps = z.infer<typeof createOrderSchema>;
@@ -27,33 +25,38 @@ export async function createOrder(
   createOrderRequest: CreateOrderProps
 ): Promise<string> {
   const validRequest = createOrderSchema.parse(createOrderRequest);
-  const currentSession = await session.getSession(
-    validRequest.shoppingCart.sessionId
-  );
+
+  const currentSession = await session.getSession(validRequest.sessionId);
   const user = await users.getUserById(currentSession.userId);
+  const event = await events.getEvent(validRequest.subdomain);
 
   if (!user) {
     throw new Error("User not found");
   }
 
-  const order: CreateOrder = {
-    sessionId: validRequest.shoppingCart.sessionId,
+  if (!event) {
+    throw new Error("Event not found");
+  }
+
+  // At this point the shopping cart is already created explaining which ticket type the user wants to buy
+  // and how many. Tickets are not reserved yet.
+  const orderId = await orders.Order.createOrder(
+    validRequest.shoppingCartId,
+    validRequest.customerDetails,
     user,
-    subdomain: validRequest.shoppingCart.subdomain,
-    customerDetails: validRequest.customerDetails,
-    shoppingCart: {
-      ...validRequest.shoppingCart,
-      tickets: {},
-    },
-    history: [
-      {
-        timestamp: new Date().toUTCString(),
-        event: "created",
-      },
-    ],
-  };
+    event
+  );
 
-  const orderId = await orders.createOrder(order);
+  // We know the total amount based on the basket value and what's being ordered
+  const totalAmount = await orders.Order.calculateTotal(orderId);
 
-  return orderId;
+  // Kick off Payment
+  const paymentResponse = await payment.createPayment(
+    orderId,
+    user.email,
+    totalAmount.toString(),
+    `http://${event.subdomain}.localhost:3000/checkout-complete`
+  );
+
+  return paymentResponse.paymentUrl;
 }

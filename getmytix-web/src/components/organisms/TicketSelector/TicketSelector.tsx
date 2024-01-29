@@ -1,7 +1,7 @@
 "use client";
 
 import { Montserrat } from "next/font/google";
-import { tickets } from "@/lib/domain";
+import { events } from "@/lib/domain";
 import { TicketType as TicketTypeComponent } from "@/components/molecules";
 import { addTicketToShoppingCart } from "@/app/server-actions/shopping-cart";
 
@@ -22,22 +22,22 @@ type TicketSelectorProps = {
       quantityInShoppingCart: number;
     }[];
   };
-  sessionId: string;
+  shoppingCartId: string;
 };
 
 export function TicketSelector({
-  event: { id: subdomain, ticketTypes },
-  sessionId,
+  event: { ticketTypes },
+  shoppingCartId,
 }: TicketSelectorProps) {
   const handleTicketTypeSelected = (
-    ticketType: tickets.TicketType,
+    ticketType: events.TicketType,
     quantity: number
   ) => {
     addTicketToShoppingCart({
-      subdomain: subdomain,
-      sessionId,
+      shoppingCartId,
       tickets: {
-        [ticketType.id]: quantity,
+        ticketId: ticketType.id,
+        quantity,
       },
     });
   };

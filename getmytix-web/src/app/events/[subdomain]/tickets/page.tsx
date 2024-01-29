@@ -4,7 +4,7 @@ import { getEvent } from "@/lib/domain/events";
 import { TicketSelector } from "@/components/organisms";
 import { Button } from "@/components/ui/button";
 import { getSessionId } from "@/lib/domain/session";
-import { shoppingCarts } from "@/lib/domain";
+import { shoppingCart } from "@/lib/domain";
 
 type TicketProps = {
   params: {
@@ -14,20 +14,18 @@ type TicketProps = {
 
 export default async function Tickets({ params: { subdomain } }: TicketProps) {
   const event = await getEvent(subdomain);
+  const sessionId = getSessionId();
 
-  if (!event) {
+  if (!event || !sessionId) {
     return notFound();
   }
 
-  let sessionId = getSessionId();
-  if (!sessionId) {
-    return notFound();
-  }
+  const shoppingCartId = await shoppingCart.ShoppingCart.initialize(
+    sessionId,
+    subdomain
+  );
 
-  let shoppingCart = await shoppingCarts.getShoppingCart(sessionId, event.id);
-  if (!shoppingCart) {
-    shoppingCart = await shoppingCarts.createShoppingCart(sessionId, event.id);
-  }
+  const tickets = await shoppingCart.ShoppingCart.getTickets(shoppingCartId);
 
   return (
     <main className="flex flex-col max-w-screen-lg m-auto gap-2">
@@ -44,14 +42,17 @@ export default async function Tickets({ params: { subdomain } }: TicketProps) {
             ...event,
             ticketTypes: event.ticketTypes.map((ticketType) => ({
               ...ticketType,
-              quantityInShoppingCart: shoppingCart!.tickets[ticketType.id] || 0,
+              quantityInShoppingCart: tickets[ticketType.id] || 0,
             })),
           }}
-          sessionId={sessionId}
+          shoppingCartId={shoppingCartId}
         />
 
-        <Link className="mt-8" href={`checkout`}>
-          <Button className="text-xl font-bold rounded-full px-6 py-6">
+        <Link className="mt-8" href={`checkout/${shoppingCartId}`}>
+          <Button
+            className="text-xl font-bold rounded-full px-6 py-6"
+            disabled={Object.keys(tickets).length == 0}
+          >
             Fizetés
           </Button>
         </Link>

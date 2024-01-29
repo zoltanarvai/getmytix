@@ -8,15 +8,19 @@ import { CustomerData } from "../CustomerDetailsForm";
 type SubmitOrderProps = {
   sessionId: string;
   subdomain: string;
+  shoppingCartId: string;
 };
 
-export function SubmitOrder({ sessionId, subdomain }: SubmitOrderProps) {
+export function SubmitOrder({
+  sessionId,
+  subdomain,
+  shoppingCartId,
+}: SubmitOrderProps) {
   const onSubmit = async (data: CustomerData) => {
-    const orderId = await createOrder({
-      shoppingCart: {
-        sessionId,
-        subdomain,
-      },
+    const paymentUrl = await createOrder({
+      sessionId,
+      subdomain,
+      shoppingCartId,
       customerDetails: {
         name: data.name,
         street: data.street,
@@ -29,8 +33,10 @@ export function SubmitOrder({ sessionId, subdomain }: SubmitOrderProps) {
       },
     });
 
+    debugger;
+
     // Navigate to payment page
-    window.location.href = `https://www.barion.com`;
+    window.location.href = paymentUrl;
   };
 
   return <CustomerDetailsForm onCustomerDetailsSubmitted={onSubmit} />;

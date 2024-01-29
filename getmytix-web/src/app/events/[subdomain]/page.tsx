@@ -30,6 +30,10 @@ const formatDescription = (description: string) => {
   return description.replace(/\n/g, "<br />");
 };
 
+const formatAddress = (city: string, street: string, zipCode: string) => {
+  return `${city}, ${street} ${zipCode}`;
+};
+
 export default async function Event({ params: { subdomain } }: EventProps) {
   const event = await getEvent(subdomain);
 
@@ -69,7 +73,11 @@ export default async function Event({ params: { subdomain } }: EventProps) {
         <EventDetailBox
           title="Helyszín"
           icon={<MapPinIcon className="w-6 h-6  text-gray-500" />}
-          description={event.location}
+          description={formatAddress(
+            event.address.city,
+            event.address.street,
+            event.address.zipCode
+          )}
         />
       </section>
       <section className="flex flex-1 items-center justify-center m-8">
