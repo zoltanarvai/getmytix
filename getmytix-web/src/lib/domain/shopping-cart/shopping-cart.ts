@@ -1,10 +1,12 @@
-import { get } from "http";
 import {
   createShoppingCart,
   getShoppingCart,
   getShoppingCartById,
-  updateShoppingCart,
+  addItemsToCart,
   ShoppingCart as ShoppingCartRecord,
+  removeItemFromCart,
+  clearShoppingCart,
+  deleteShoppingCart,
 } from "./repository";
 import { getEvent } from "../events";
 
@@ -23,42 +25,27 @@ export class ShoppingCart {
     return shoppingCartId;
   }
 
-  static async getTickets(
+  static async getShoppingCartItems(
     shoppingCartId: string
-  ): Promise<ShoppingCartRecord["tickets"]> {
+  ): Promise<ShoppingCartRecord["items"]> {
     const shoppingCart = await getShoppingCartById(shoppingCartId);
 
     if (!shoppingCart) {
       throw new Error("Shopping cart not found");
     }
 
-    return shoppingCart.tickets;
+    return shoppingCart.items || [];
   }
 
-  static async getTotalValue(shoppingCartId: string): Promise<number> {
+  static async getBasketValue(shoppingCartId: string): Promise<number> {
     const shoppingCart = await getShoppingCartById(shoppingCartId);
     if (!shoppingCart) {
       throw new Error("Shopping cart not found");
     }
 
-    const event = await getEvent(shoppingCart.subdomain);
-    if (!event) {
-      throw new Error("Event not found");
-    }
-
-    const tickets = event.ticketTypes;
-
-    const total = Object.entries(shoppingCart.tickets).reduce(
-      (acc, [ticketId, qty]) => {
-        const ticket = tickets.find((ticket) => ticket.id === ticketId);
-        if (!ticket) {
-          throw new Error(`Ticket ${ticketId} not found`);
-        }
-
-        return acc + ticket.price * qty;
-      },
-      0
-    );
+    const total = shoppingCart.items.reduce((acc, item) => {
+      return acc + item.unitPrice;
+    }, 0);
 
     return total;
   }
@@ -75,20 +62,49 @@ export class ShoppingCart {
     return shoppingCart;
   }
 
-  static async addTicket(
+  static async addItems(
     shoppingCartId: string,
-    ticketId: string,
+    itemId: string,
     quantity: number
   ): Promise<void> {
     const shoppingCart = await getShoppingCartById(shoppingCartId);
-
     if (!shoppingCart) {
       throw new Error("Shopping cart not found");
     }
 
-    await updateShoppingCart(shoppingCartId, {
-      ...shoppingCart.tickets,
-      [ticketId]: quantity,
-    });
+    const event = await getEvent(shoppingCart.subdomain);
+    if (!event) {
+      throw new Error("Event not found");
+    }
+
+    const ticketType = event.ticketTypes.find((ticket) => ticket.id === itemId);
+    if (!ticketType) {
+      throw new Error("Ticket type not found");
+    }
+
+    const items = [];
+    for (let i = 0; i < quantity; i++) {
+      items.push({
+        itemId,
+        unitPrice: ticketType.price,
+      });
+    }
+
+    await addItemsToCart(shoppingCartId, items);
+  }
+
+  static async removeItem(
+    shoppingCartId: string,
+    itemId: string
+  ): Promise<void> {
+    await removeItemFromCart(shoppingCartId, itemId);
+  }
+
+  static async clear(shoppingCartId: string): Promise<void> {
+    await clearShoppingCart(shoppingCartId);
+  }
+
+  static async deleteCart(shoppingCartId: string): Promise<void> {
+    await deleteShoppingCart(shoppingCartId);
   }
 }

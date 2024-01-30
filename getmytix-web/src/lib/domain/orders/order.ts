@@ -25,37 +25,22 @@ export class Order {
     event: Domain<Event>
   ): Promise<string> {
     const shoppingCart = await ShoppingCart.getShoppingCart(shoppingCartId);
-    const ticketsToOrder: CreateOrder["tickets"] = Object.keys(
-      shoppingCart.tickets
-    ).map((ticketId) => {
-      const quantity = shoppingCart.tickets[ticketId];
-      const unitPrice = event.ticketTypes.find(
-        (ticketType) => ticketType.id === ticketId
-      )?.price;
-
-      if (!unitPrice) {
-        throw new Error(`Ticket ${ticketId} not found`);
-      }
-
-      return {
-        itemId: ticketId,
-        quantity,
-        unitPrice,
-      };
-    });
+    const ticketsToOrder: CreateOrder["tickets"] = shoppingCart.items;
 
     const order: CreateOrder = {
-      shoppingCartId,
       user,
       customerDetails,
       eventId: event.id,
       tickets: ticketsToOrder,
+      shoppingCartId,
       history: [
         {
           timestamp: new Date().toUTCString(),
           event: "created",
         },
       ],
+      createdAt: new Date().toUTCString(),
+      updatedAt: new Date().toUTCString(),
     };
 
     return await createOrder(order);
@@ -68,7 +53,7 @@ export class Order {
     }
 
     const total = order.tickets.reduce((acc, ticket) => {
-      return acc + ticket.quantity * ticket.unitPrice;
+      return acc + ticket.unitPrice;
     }, 0);
 
     return total;
@@ -94,11 +79,9 @@ export class Order {
       throw new Error(`Event ${order.eventId} not found`);
     }
 
-    // STEP 2. Kick off ticket generation process
     await Tickets.generateTickets(order, event);
-
-    // STEP 3. Kick off invoicing process
     await Invoices.generateInvoice(order, event);
+    await ShoppingCart.deleteCart(order.shoppingCartId);
 
     // TODO: Add API to update ticket status
     // printed, sent

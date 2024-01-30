@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import { Domain } from "../../types";
 import { OrderRecord } from "../orders/repository";
 import { Event } from "../events";
@@ -8,23 +9,35 @@ export class Invoices {
     order: OrderRecord,
     event: Domain<Event>
   ): Promise<void> {
-    const tickets = Object.keys(order.tickets).map((orderedTicketId) => {
+    const getTicketType = (ticketId: string) => {
       const ticketType = event.ticketTypes.find(
-        (ticketType) => ticketType.id === orderedTicketId
+        (ticketType) => ticketType.id === ticketId
       );
+
       if (!ticketType) {
         throw new Error(
-          `Ticket type ${orderedTicketId} not found in event ${event.id}`
+          `Ticket type ${ticketId} not found in event ${event.id}`
         );
       }
 
-      return {
-        ticketTypeId: orderedTicketId,
-        ticketType: ticketType.type,
-        quantity: order.tickets[orderedTicketId],
-        unitPrice: ticketType.price,
-      };
-    });
+      return ticketType;
+    };
+
+    const tickets = R.pipe(
+      order.tickets,
+      R.groupBy((ticket) => ticket.itemId),
+      Object.entries,
+      R.map(([key, group]) => {
+        const ticketType = getTicketType(key);
+
+        return {
+          ticketTypeId: ticketType.id,
+          quantity: group.length,
+          unitPrice: ticketType.price,
+          ticketType: ticketType.type,
+        };
+      })
+    );
 
     await generateInvoice({
       orderId: order._id.toHexString(),

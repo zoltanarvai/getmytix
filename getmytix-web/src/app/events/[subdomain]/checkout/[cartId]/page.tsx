@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import { notFound } from "next/navigation";
 import { events, shoppingCart } from "@/lib/domain";
 import { getSessionId } from "@/lib/domain/session";
@@ -20,7 +21,15 @@ export default async function Checkout({
     return notFound();
   }
 
-  const tickets = await shoppingCart.ShoppingCart.getTickets(cartId);
+  const shoppingCartItems =
+    await shoppingCart.ShoppingCart.getShoppingCartItems(cartId);
+
+  const ticketsInShoppingCart = R.pipe(
+    shoppingCartItems,
+    R.map(({ itemId }) => event.ticketTypes.find(({ id }) => id === itemId)),
+    R.filter((ticketType) => !!ticketType),
+    R.groupBy((ticketType) => ticketType!.id)
+  );
 
   return (
     <main className="flex flex-col max-w-screen-lg m-auto gap-2">
@@ -37,7 +46,8 @@ export default async function Checkout({
             ...event,
             ticketTypes: event.ticketTypes.map((ticketType) => ({
               ...ticketType,
-              quantityInShoppingCart: tickets[ticketType.id] || 0,
+              quantityInShoppingCart:
+                ticketsInShoppingCart[ticketType.id]?.length || 0,
             })),
           }}
         />

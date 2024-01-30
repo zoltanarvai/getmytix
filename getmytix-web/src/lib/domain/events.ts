@@ -23,12 +23,15 @@ export const eventSchema = z.object({
   subdomain: z.string(),
   startDateTime: z.string(),
   endDateTime: z.string().optional(),
+  notes: z.string(),
   address: z.object({
     street: z.string(),
     city: z.string(),
     zipCode: z.string(),
   }),
   ticketTypes: z.array(ticketSchema),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export type Event = z.infer<typeof eventSchema>;

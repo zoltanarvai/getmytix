@@ -8,7 +8,7 @@ export async function createShoppingCart(
     const shoppingCart = {
       sessionId: sessionId,
       subdomain: subdomain,
-      tickets: {},
+      items: [],
     };
 
     const db = await getDB();

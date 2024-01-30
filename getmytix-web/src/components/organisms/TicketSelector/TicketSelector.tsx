@@ -1,9 +1,16 @@
 "use client";
 
 import { Montserrat } from "next/font/google";
+import * as R from "remeda";
 import { events } from "@/lib/domain";
-import { TicketType as TicketTypeComponent } from "@/components/molecules";
-import { addTicketToShoppingCart } from "@/app/server-actions/shopping-cart";
+import {
+  ShoppingCartItem,
+  TicketType as TicketTypeComponent,
+} from "@/components/molecules";
+import {
+  addItemToShoppingCart,
+  removeItemFromShoppingCart,
+} from "@/app/server-actions/shopping-cart";
 
 const fontMontserrat = Montserrat({
   subsets: ["latin"],
@@ -19,21 +26,24 @@ type TicketSelectorProps = {
       price: number;
       description: string;
       quantity: number;
-      quantityInShoppingCart: number;
     }[];
   };
   shoppingCartId: string;
+  shoppingCartItems: {
+    itemId: string;
+  }[];
 };
 
 export function TicketSelector({
   event: { ticketTypes },
   shoppingCartId,
+  shoppingCartItems,
 }: TicketSelectorProps) {
-  const handleTicketTypeSelected = (
+  const handleAddToBasket = async (
     ticketType: events.TicketType,
     quantity: number
   ) => {
-    addTicketToShoppingCart({
+    await addItemToShoppingCart({
       shoppingCartId,
       tickets: {
         ticketId: ticketType.id,
@@ -42,6 +52,17 @@ export function TicketSelector({
     });
   };
 
+  const handleRemoveFromBasket = async (itemId: string) => {
+    await removeItemFromShoppingCart({ shoppingCartId, itemId });
+  };
+
+  const ticketsInShoppingCart = R.pipe(
+    shoppingCartItems,
+    R.map(({ itemId }) => ticketTypes.find(({ id }) => id === itemId)),
+    R.filter((ticketType) => !!ticketType),
+    R.groupBy((ticketType) => ticketType!.id)
+  );
+
   return (
     <div className="flex flex-col justify-start w-full">
       <h2
@@ -49,7 +70,6 @@ export function TicketSelector({
       >
         Jegytípusok
       </h2>
-
       <div className="mt-2 flex flex-1 flex-col gap-2">
         {ticketTypes.map((ticketType) => (
           <TicketTypeComponent
@@ -58,10 +78,26 @@ export function TicketSelector({
             price={ticketType.price}
             description={ticketType.description}
             availableQuantity={ticketType.quantity}
-            currentQuantityInShoppingCart={ticketType.quantityInShoppingCart}
             onTicketTypeSelected={(quantity) =>
-              handleTicketTypeSelected(ticketType, quantity)
+              handleAddToBasket(ticketType, quantity)
             }
+          />
+        ))}
+      </div>
+      <h2
+        className={`uppercase font-bold text-xl antialiased ${fontMontserrat.className}`}
+      >
+        Shopping carts
+      </h2>
+      <div className="mt-2 flex flex-1 flex-col gap-2">
+        {Object.entries(ticketsInShoppingCart).map(([itemId, ticket]) => (
+          <ShoppingCartItem
+            key={itemId}
+            name={ticket[0]!.type}
+            price={ticket[0]!.price}
+            currentQuantityInShoppingCart={ticket.length}
+            enableRemove
+            onRemoveFromShoppingCart={() => handleRemoveFromBasket(itemId)}
           />
         ))}
       </div>

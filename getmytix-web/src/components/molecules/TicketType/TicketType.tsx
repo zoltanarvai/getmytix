@@ -10,7 +10,6 @@ type TicketTypeProps = {
   price: number;
   description: string;
   availableQuantity: number;
-  currentQuantityInShoppingCart: number;
 
   onTicketTypeSelected: (quantity: number) => void;
 };
@@ -20,7 +19,6 @@ export function TicketType({
   price,
   description,
   availableQuantity,
-  currentQuantityInShoppingCart,
   onTicketTypeSelected,
 }: TicketTypeProps) {
   const [quantityToBuy, setQuantityToBuy] = useState(0);
@@ -83,11 +81,11 @@ export function TicketType({
                   className="w-24 border border-gray-200 rounded-md"
                   min={0}
                   max={availableQuantity}
-                  defaultValue={currentQuantityInShoppingCart}
+                  defaultValue={0}
                   onChange={onQuantityChange}
                 />
               </div>
-              <Button onClick={onAddToCartClick}>Kosárba</Button>
+              <Button onClick={onAddToCartClick}>Hozzáadás</Button>
             </div>
           </div>
         </div>

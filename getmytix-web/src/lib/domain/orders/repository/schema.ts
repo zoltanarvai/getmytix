@@ -15,7 +15,6 @@ export const historyItemSchema = z.object({
 
 export const orderItemSchema = z.object({
   itemId: z.string(),
-  quantity: z.number(),
   unitPrice: z.number(),
 });
 
@@ -39,6 +38,8 @@ export const orderSchema = z.object({
   }),
   tickets: z.array(orderItemSchema),
   history: z.array(historyItemSchema).optional().default([]),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export type OrderRecord = z.infer<typeof orderSchema>;

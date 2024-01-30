@@ -27,14 +27,16 @@ export function ShoppingCart({ event: { ticketTypes } }: ShoppingCartProps) {
       </h2>
 
       <div className="mt-2 flex flex-1 flex-col gap-2">
-        {ticketTypes.map((ticketType) => (
-          <ShoppingCartItem
-            key={ticketType.id}
-            name={ticketType.type}
-            price={ticketType.price}
-            currentQuantityInShoppingCart={ticketType.quantityInShoppingCart}
-          />
-        ))}
+        {ticketTypes
+          .filter((ticketType) => ticketType.quantityInShoppingCart > 0)
+          .map((ticketType) => (
+            <ShoppingCartItem
+              key={ticketType.id}
+              name={ticketType.type}
+              price={ticketType.price}
+              currentQuantityInShoppingCart={ticketType.quantityInShoppingCart}
+            />
+          ))}
       </div>
     </div>
   );

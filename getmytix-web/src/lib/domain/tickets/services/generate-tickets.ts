@@ -1,7 +1,9 @@
 import AWS from "aws-sdk";
 import { z } from "zod";
 
-const sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
+AWS.config.update({ region: "eu-central-1" });
+
+const sqs = new AWS.SQS({ apiVersion: "2012-11-05", region: "eu-central-1" });
 
 const queueURL = process.env.TICKETS_QUEUE_URL;
 
@@ -12,6 +14,7 @@ const ticketGenerationRequestSchema = z.object({
       ticketTypeId: z.string(),
       ticketType: z.string(),
       ticketId: z.string(),
+      unitPrice: z.number(),
     })
   ),
   eventDetails: z.object({

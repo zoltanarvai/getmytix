@@ -16,7 +16,10 @@ export async function addHistoryItem(
 
     const result = await collection.updateOne(
       { _id: new ObjectId(orderId) },
-      { $push: { history: entry } }
+      {
+        $push: { history: entry },
+        $set: { updatedAt: new Date().toUTCString() },
+      }
     );
 
     if (result.modifiedCount !== 1) {

@@ -9,7 +9,7 @@ export class Tickets {
     order: OrderRecord,
     event: Domain<Event>
   ): Promise<void> {
-    const ticketPromises = await Promise.all(
+    const tickets = await Promise.all(
       order.tickets.map(async (orderedTicket) => {
         const ticketType = event.ticketTypes.find(
           (ticketType) => ticketType.id === orderedTicket.itemId
@@ -20,29 +20,29 @@ export class Tickets {
           );
         }
 
-        const tickets = [];
+        const ticketId = await createTicket({
+          orderId: order._id.toHexString(),
+          eventId: event.id,
+          ticketTypeId: orderedTicket.itemId,
+          status: "created",
+          details: {
+            event,
+            ticketType,
+            customer: {
+              name: order.customerDetails.name,
+              email: order.user.email,
+            },
+          },
+        });
 
-        for (let i = 0; i < orderedTicket.quantity; i++) {
-          const ticketId = await createTicket({
-            orderId: order._id.toHexString(),
-            eventId: event.id,
-            ticketTypeId: orderedTicket.itemId,
-            status: "created",
-          });
-
-          tickets.push({
-            ticketId,
-            ticketTypeId: orderedTicket.itemId,
-            ticketType: ticketType.type,
-            unitPrice: ticketType.price,
-          });
-        }
-
-        return tickets;
+        return {
+          ticketId,
+          ticketTypeId: orderedTicket.itemId,
+          ticketType: ticketType.type,
+          unitPrice: ticketType.price,
+        };
       })
     );
-
-    const tickets = ticketPromises.flatMap((tickets) => tickets);
 
     await generateTickets({
       orderId: order._id.toHexString(),
@@ -50,7 +50,7 @@ export class Tickets {
       eventDetails: {
         name: event.name,
         description: event.description,
-        notes: event.longDescription,
+        notes: event.notes,
         startDate: event.startDateTime,
         address: event.address,
         logo: event.logo,

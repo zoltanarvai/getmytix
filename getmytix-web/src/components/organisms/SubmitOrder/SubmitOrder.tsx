@@ -33,8 +33,6 @@ export function SubmitOrder({
       },
     });
 
-    debugger;
-
     // Navigate to payment page
     window.location.href = paymentUrl;
   };

@@ -1,15 +1,20 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 type ShoppingCartItemProps = {
   name: string;
   price: number;
   currentQuantityInShoppingCart: number;
+  enableRemove?: boolean;
+  onRemoveFromShoppingCart?: () => void;
 };
 
 export function ShoppingCartItem({
   name,
   price,
   currentQuantityInShoppingCart,
+  onRemoveFromShoppingCart,
+  enableRemove = false,
 }: ShoppingCartItemProps) {
   return (
     <Card className="flex flex-col bg-gray-100 pt-4">
@@ -27,6 +32,11 @@ export function ShoppingCartItem({
                 <p className="text-gray-500">Mennyiség</p>
                 <p>{currentQuantityInShoppingCart} db</p>
               </div>
+              {enableRemove && (
+                <Button onClick={() => onRemoveFromShoppingCart!()}>
+                  Eltavolitas
+                </Button>
+              )}
             </div>
           </div>
         </div>

@@ -1,9 +1,9 @@
 import { getDB } from "../../../mongodb";
 import { ObjectId } from "mongodb";
 
-export async function updateShoppingCart(
+export async function removeItemFromCart(
   shoppingCartId: string,
-  tickets: Record<string, number>
+  itemId: string
 ): Promise<void> {
   try {
     const db = await getDB();
@@ -11,14 +11,14 @@ export async function updateShoppingCart(
 
     const updateResult = await collection.updateOne(
       { _id: new ObjectId(shoppingCartId) },
-      { $set: { tickets: tickets } }
+      { $pull: { items: { itemId: itemId } } }
     );
 
-    if (updateResult.modifiedCount !== 1) {
-      throw new Error("Could not update the document.");
+    if (updateResult.modifiedCount === 0) {
+      throw new Error("Could not remove item from cart.");
     }
   } catch (error) {
-    console.error("Could not update shopping cart", error);
+    console.error("Could not remove item from cart", error);
     throw error;
   }
 }

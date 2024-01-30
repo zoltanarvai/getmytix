@@ -46,7 +46,6 @@ export function CustomerDetailsForm({
   });
 
   const onSubmit = async (data: CustomerData) => {
-    console.log(">>> here");
     onCustomerDetailsSubmitted(data);
   };
 
@@ -62,11 +61,7 @@ export function CustomerDetailsForm({
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={(x) => {
-                console.log(">>> here", x.target);
-                debugger;
-                form.handleSubmit(onSubmit)(x);
-              }}
+              onSubmit={form.handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
               <TwoColumnLayout>

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getEvent } from "@/lib/domain/events";
 import { TicketSelector } from "@/components/organisms";
 import { Button } from "@/components/ui/button";
-import { getSessionId } from "@/lib/domain/session";
+import { session } from "@/lib/domain";
 import { shoppingCart } from "@/lib/domain";
 
 type TicketProps = {
@@ -14,10 +14,14 @@ type TicketProps = {
 
 export default async function Tickets({ params: { subdomain } }: TicketProps) {
   const event = await getEvent(subdomain);
-  const sessionId = getSessionId();
+  const sessionId = session.getSessionId();
 
-  if (!event || !sessionId) {
+  if (!event) {
     return notFound();
+  }
+
+  if (!sessionId) {
+    throw new Error("No session has been established");
   }
 
   const shoppingCartId = await shoppingCart.ShoppingCart.initialize(
@@ -25,7 +29,9 @@ export default async function Tickets({ params: { subdomain } }: TicketProps) {
     subdomain
   );
 
-  const tickets = await shoppingCart.ShoppingCart.getTickets(shoppingCartId);
+  const items = await shoppingCart.ShoppingCart.getShoppingCartItems(
+    shoppingCartId
+  );
 
   return (
     <main className="flex flex-col max-w-screen-lg m-auto gap-2">
@@ -42,16 +48,17 @@ export default async function Tickets({ params: { subdomain } }: TicketProps) {
             ...event,
             ticketTypes: event.ticketTypes.map((ticketType) => ({
               ...ticketType,
-              quantityInShoppingCart: tickets[ticketType.id] || 0,
+              quantityInShoppingCart: 0,
             })),
           }}
           shoppingCartId={shoppingCartId}
+          shoppingCartItems={items}
         />
 
         <Link className="mt-8" href={`checkout/${shoppingCartId}`}>
           <Button
             className="text-xl font-bold rounded-full px-6 py-6"
-            disabled={Object.keys(tickets).length == 0}
+            disabled={items.length == 0}
           >
             Fizetés
           </Button>

@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { getEvent } from "@/lib/domain/events";
-import { orders, payment } from "@/lib/domain";
+import { orders, payment, shoppingCart } from "@/lib/domain";
 import { Order } from "@/lib/domain/orders";
 
-type StartProps = {
+type CheckoutCompleteProps = {
   params: { subdomain: string };
   searchParams: {
     r: string;
@@ -11,11 +11,10 @@ type StartProps = {
   };
 };
 
-export default async function Start({
+export default async function CheckoutComplete({
   params: { subdomain },
   searchParams: { r, s },
-}: StartProps) {
-  console.log("> itt vagyunk");
+}: CheckoutCompleteProps) {
   const event = await getEvent(subdomain);
   const response = payment.getValidatedResponse(r, s);
   const orderRecord = await orders.repository.getOrder(response.orderId);
