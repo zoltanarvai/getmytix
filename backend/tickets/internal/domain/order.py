@@ -8,6 +8,7 @@ class Ticket(BaseModel):
     ticket_type: str = Field(alias="ticketType")
     ticket_id: str = Field(alias="ticketId")
     unit_price: int = Field(alias="unitPrice")
+    ticket_callback_url: str = Field(alias="ticketCallbackUrl")
 
 
 class Address(BaseModel):
@@ -37,6 +38,7 @@ class CustomerDetails(BaseModel):
 
 class Order(BaseModel):
     order_id: str = Field(alias="orderId")
+    order_callback_url: str = Field(alias="orderCallbackUrl")
     tickets: list[Ticket]
     event_details: EventDetails = Field(alias="eventDetails")
     customer_details: CustomerDetails = Field(alias="customerDetails")

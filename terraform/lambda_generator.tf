@@ -27,6 +27,22 @@ data "aws_iam_policy_document" "lambda_generator_logs" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_generator_s3" {
+    statement {
+        effect  = "Allow"
+        actions = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        resources = [
+          aws_s3_bucket.tickets.arn,
+          "${aws_s3_bucket.tickets.arn}/*"
+        ]
+    }
+
+}
+
 data "aws_iam_policy_document" "lambda_generator_sqs" {
   statement {
     effect  = "Allow"
@@ -54,6 +70,11 @@ resource "aws_iam_policy" "lambda_generator_logs" {
   policy = data.aws_iam_policy_document.lambda_generator_logs.json
 }
 
+resource "aws_iam_policy" "lambda_generator_s3" {
+  name   = "${local.lambda_generator_function_name}-s3"
+  policy = data.aws_iam_policy_document.lambda_generator_s3.json
+}
+
 resource "aws_iam_policy" "lambda_generator_sqs" {
   name   = "${local.lambda_generator_function_name}-sqs"
   policy = data.aws_iam_policy_document.lambda_generator_sqs.json
@@ -62,6 +83,11 @@ resource "aws_iam_policy" "lambda_generator_sqs" {
 resource "aws_iam_role_policy_attachment" "lambda_generator_logs" {
   role       = aws_iam_role.lambda_generator.name
   policy_arn = aws_iam_policy.lambda_generator_logs.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_generator_s3" {
+  role       = aws_iam_role.lambda_generator.name
+  policy_arn = aws_iam_policy.lambda_generator_s3.arn
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_generator_sqs" {
@@ -88,6 +114,10 @@ resource "aws_lambda_function" "lambda_generator" {
   environment {
     variables = {
       TICKET_PRINT_QUEUE_DLQ_URL = aws_sqs_queue.ticket_print_dlq.url
+      TICKETS_BUCKET_NAME        = aws_s3_bucket.tickets.bucket
+      WEBHOOKS_URL               = var.getmytix_webhook_domain
+      MAILER_SEND_API_KEY        = var.mailer_send_api_key
+      WEBHOOKS_SECRET            = var.getmytix_webhook_secret
     }
   }
 

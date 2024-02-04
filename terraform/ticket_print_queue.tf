@@ -30,6 +30,11 @@ resource "aws_sqs_queue" "ticket_print_queue" {
 
   visibility_timeout_seconds = 120
 
+  dead_letter_queue {
+    max_receive_count = 3
+    arn = aws_sqs_queue.ticket_print_dlq.arn
+  }
+
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.ticket_print_dlq.arn
     maxReceiveCount     = 3

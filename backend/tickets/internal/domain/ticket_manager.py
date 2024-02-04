@@ -7,7 +7,7 @@ from botocore.client import BaseClient
 
 from .webhooks import Webhooks
 from .mailer import TicketMailer
-from .order import Ticket, EventDetails, CustomerDetails
+from .order import Ticket, EventDetails, CustomerDetails, Order
 from .qr_code import QRCode
 from .pdf_creator import PDFCreator
 
@@ -89,6 +89,7 @@ class TicketManager:
             tasks = [
                 self._webhooks.update_ticket(
                     ticket_id=ticket.ticket_id,
+                    ticket_callback_url=ticket.ticket_callback_url,
                     status="printed",
                     payload={"ticket_url": ticket_url}
                 )
@@ -100,3 +101,19 @@ class TicketManager:
         asyncio.run(update_all_tickets())
 
         logging.info("Ticket statuses updated")
+
+    def update_order_delivered(self, order: Order):
+        async def update_order():
+            tasks = [
+                self._webhooks.update_order(
+                    order_id=order.order_id,
+                    order_callback_url=order.order_callback_url,
+                    status="delivered"
+                )
+            ]
+            await asyncio.gather(*tasks)
+
+        # Run the asynchronous tasks from a synchronous context
+        asyncio.run(update_order())
+
+        logging.info("Order statuses updated")

@@ -9,7 +9,7 @@ export const historyItemSchema = z.object({
     "cancelled",
     "refunded",
     "invoiced",
-    "issued",
+    "delivered",
   ]),
 });
 

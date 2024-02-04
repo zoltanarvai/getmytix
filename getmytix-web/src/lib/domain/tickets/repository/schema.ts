@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 export const ticketStatusSchema = z.union([
   z.literal("created"),
   z.literal("printed"),
-  z.literal("sent"),
 ]);
 
 export type TicketStatus = z.infer<typeof ticketStatusSchema>;
@@ -15,6 +14,7 @@ export const ticketSchema = z.object({
   eventId: z.string(),
   orderId: z.string(),
   status: ticketStatusSchema,
+  ticketUrl: z.string().optional(),
   details: z.object({
     event: z.object({
       name: z.string(),

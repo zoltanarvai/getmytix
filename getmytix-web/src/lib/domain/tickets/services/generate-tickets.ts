@@ -7,16 +7,20 @@ const queueURL = process.env.TICKETS_QUEUE_URL;
 
 const ticketGenerationRequestSchema = z.object({
   orderId: z.string(),
+  orderCallbackUrl: z.string(),
   tickets: z.array(
     z.object({
       ticketTypeId: z.string(),
       ticketType: z.string(),
       ticketId: z.string(),
       unitPrice: z.number(),
+      ticketCallbackUrl: z.string(),
     })
   ),
   eventDetails: z.object({
+    id: z.string(),
     name: z.string(),
+    subdomain: z.string(),
     logo: z.string(),
     description: z.string(),
     notes: z.string(),
