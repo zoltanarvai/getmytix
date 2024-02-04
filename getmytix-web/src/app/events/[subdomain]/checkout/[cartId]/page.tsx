@@ -1,8 +1,8 @@
 import * as R from "remeda";
 import { notFound } from "next/navigation";
-import { events, shoppingCart } from "@/lib/domain";
-import { getSessionId } from "@/lib/domain/session";
+import { events, shoppingCart, session } from "@/lib/domain";
 import { ShoppingCart, SubmitOrder } from "@/components/organisms";
+import { PageSection, PageTitles } from "@/components/molecules";
 
 type CheckoutProps = {
   params: {
@@ -14,15 +14,18 @@ type CheckoutProps = {
 export default async function Checkout({
   params: { subdomain, cartId },
 }: CheckoutProps) {
-  const sessionId = getSessionId();
-  const event = await events.getEvent(subdomain);
+  const sessionId = session.getCurrentSessionId();
+  const event = await events.getEventBySubdomain(subdomain);
 
   if (!sessionId || !event) {
     return notFound();
   }
 
-  const shoppingCartItems =
-    await shoppingCart.ShoppingCart.getShoppingCartItems(cartId);
+  console.log(">>>>> event", event);
+  console.log(">>>>> sessionId", sessionId);
+  console.log(">>>>> cartId", cartId);
+
+  const shoppingCartItems = await shoppingCart.getShoppingCartItems(cartId);
 
   const ticketsInShoppingCart = R.pipe(
     shoppingCartItems,
@@ -33,14 +36,9 @@ export default async function Checkout({
 
   return (
     <main className="flex flex-col max-w-screen-lg m-auto gap-2">
-      <section className="flex self-center flex-col mt-20 items-center">
-        <h1 className="text-6xl font-bold tracking-tight">{event.name}</h1>
-        <h2 className="text-2xl text-gray-500 mt-2 text-center">
-          {event.description}
-        </h2>
-      </section>
+      <PageTitles title={event.name} subtitle={event.description} />
 
-      <section className="flex flex-1 flex-col items-center justify-center m-8">
+      <PageSection title="Kosaram">
         <ShoppingCart
           event={{
             ...event,
@@ -51,13 +49,11 @@ export default async function Checkout({
             })),
           }}
         />
+      </PageSection>
 
-        <SubmitOrder
-          sessionId={sessionId}
-          subdomain={event.subdomain}
-          shoppingCartId={cartId}
-        />
-      </section>
+      <PageSection title="Vásárló adatai" classNames="mt-8">
+        <SubmitOrder subdomain={event.subdomain} shoppingCartId={cartId} />
+      </PageSection>
     </main>
   );
 }

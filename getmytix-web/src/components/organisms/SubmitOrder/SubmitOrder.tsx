@@ -6,19 +6,13 @@ import { CustomerDetailsForm } from "../CustomerDetailsForm";
 import { CustomerData } from "../CustomerDetailsForm";
 
 type SubmitOrderProps = {
-  sessionId: string;
   subdomain: string;
   shoppingCartId: string;
 };
 
-export function SubmitOrder({
-  sessionId,
-  subdomain,
-  shoppingCartId,
-}: SubmitOrderProps) {
+export function SubmitOrder({ subdomain, shoppingCartId }: SubmitOrderProps) {
   const onSubmit = async (data: CustomerData) => {
-    const paymentUrl = await createOrder({
-      sessionId,
+    const paymentResponse = await createOrder({
       subdomain,
       shoppingCartId,
       customerDetails: {
@@ -33,8 +27,15 @@ export function SubmitOrder({
       },
     });
 
-    // Navigate to payment page
-    window.location.href = paymentUrl;
+    console.log(">>>>> paymentResponse", paymentResponse);
+
+    if (paymentResponse.mode === "confirmation") {
+      // Navigate to free checkout complete page
+      window.location.href = paymentResponse.redirectUrl;
+    } else {
+      // Navigate to payment page
+      window.location.href = paymentResponse.redirectUrl;
+    }
   };
 
   return <CustomerDetailsForm onCustomerDetailsSubmitted={onSubmit} />;

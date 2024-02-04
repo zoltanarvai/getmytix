@@ -1,15 +1,16 @@
-import { z } from "zod";
 import { getDB } from "../../../mongodb";
-import { orderSchema } from "./schema";
-
-const createOrderSchema = orderSchema.omit({ _id: true });
-export type CreateOrder = z.infer<typeof createOrderSchema>;
+import { createOrderSchema, CreateOrder } from "./schema";
 
 export async function createOrder(createOrder: CreateOrder): Promise<string> {
   try {
     const entry = createOrderSchema.parse(createOrder);
+
     const db = await getDB();
-    const result = await db.collection("orders").insertOne(entry);
+    const result = await db.collection("orders").insertOne({
+      ...entry,
+      createdAt: new Date().toUTCString(),
+      updatedAt: new Date().toUTCString(),
+    });
 
     return result.insertedId.toHexString();
   } catch (error) {

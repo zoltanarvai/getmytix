@@ -11,7 +11,9 @@ type TicketTypeProps = {
   description: string;
   availableQuantity: number;
 
-  onTicketTypeSelected: (quantity: number) => void;
+  onTicketTypeSelected: (
+    quantity: number
+  ) => Promise<"added" | "not-enough-tickets">;
 };
 
 export function TicketType({
@@ -25,41 +27,53 @@ export function TicketType({
   const { toast } = useToast();
 
   const onQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TODO consider available quantity
-    if (parseInt(e.target.value) > availableQuantity) {
+    const desiredQuantity = parseInt(e.target.value);
+
+    if (desiredQuantity > availableQuantity) {
       toast({
         title: "Nincs elég jegy!",
         description: `Ebből a jegytípusból csak ${availableQuantity} db van!`,
         variant: "destructive",
       });
-
-      return;
     }
 
-    setQuantityToBuy(parseInt(e.target.value));
+    setQuantityToBuy(desiredQuantity);
   };
 
-  const onAddToCartClick = () => {
+  const onAddToCartClick = async () => {
     if (quantityToBuy) {
-      onTicketTypeSelected(quantityToBuy);
+      const result = await onTicketTypeSelected(quantityToBuy);
 
-      toast({
-        title: "Sikeresen hozzáadva a kosárhoz!",
-        description: (
-          <p className="text-md">
-            <span className="text-bold">{`${quantityToBuy} db ${name} jegyet`}</span>{" "}
-            {"adtál a kosaradhoz."}
-          </p>
-        ),
-        variant: "success",
-      });
+      if (result === "not-enough-tickets") {
+        toast({
+          title: "Nincs elég jegy!",
+          description: "Ebből a jegytípusból nincs ennyi!",
+          variant: "destructive",
+        });
+      }
+
+      if (result === "added") {
+        toast({
+          title: "Sikeresen hozzáadva a kosárhoz!",
+          description: (
+            <p className="text-md">
+              <span className="text-bold">{`${quantityToBuy} db ${name} jegyet`}</span>{" "}
+              {"adtál a kosaradhoz."}
+            </p>
+          ),
+          variant: "success",
+        });
+      }
     }
   };
+
+  const soldOut = availableQuantity === 0;
+  const buyingMoreThanAvailable = quantityToBuy > availableQuantity;
 
   return (
     <Card className="flex flex-col bg-gray-100 pt-4">
       <CardContent>
-        <div className="flex justify-between">
+        <div className="flex justify-between max-md:flex-col">
           <div>
             <div className="flex gap-2">
               <h1 className="text-xl">{name} Jegy</h1>
@@ -73,19 +87,24 @@ export function TicketType({
           </div>
 
           <div className="flex justify-between items-start">
-            <div className="flex justify-between items-end">
+            <div className="flex items-end justify-between max-md:justify-end max-md:mt-4 flex-1">
               <div className="flex flex-col mr-4">
                 <p className="text-gray-500">Mennyiség</p>
                 <Input
+                  disabled={soldOut}
                   type="number"
                   className="w-24 border border-gray-200 rounded-md"
                   min={0}
-                  max={availableQuantity}
                   defaultValue={0}
                   onChange={onQuantityChange}
                 />
               </div>
-              <Button onClick={onAddToCartClick}>Hozzáadás</Button>
+              <Button
+                disabled={soldOut || buyingMoreThanAvailable}
+                onClick={onAddToCartClick}
+              >
+                Hozzáadás
+              </Button>
             </div>
           </div>
         </div>

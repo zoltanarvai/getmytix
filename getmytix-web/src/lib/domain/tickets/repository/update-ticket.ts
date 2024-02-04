@@ -1,10 +1,10 @@
-import { getDB } from "@/lib/mongodb";
-import { TicketRecord } from "./schema";
 import { ObjectId } from "mongodb";
+import { getDB } from "@/lib/mongodb";
+import { TicketStatus } from "./schema";
 
 export async function updateTicket(
   ticketId: string,
-  status: TicketRecord["status"]
+  status: TicketStatus
 ): Promise<void> {
   const db = await getDB();
 

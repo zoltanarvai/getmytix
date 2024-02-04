@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`min-h-screen bg-background antialiased ${GeistSans.className}`}
+        className={`min-h-screen bg-background antialiased mx-4 ${GeistSans.className}`}
       >
         <Image
           src="/logo.jpeg"

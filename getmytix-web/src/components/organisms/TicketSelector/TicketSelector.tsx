@@ -1,9 +1,8 @@
 "use client";
 
-import { Montserrat } from "next/font/google";
 import * as R from "remeda";
-import { events } from "@/lib/domain";
 import {
+  PageSection,
   ShoppingCartItem,
   TicketType as TicketTypeComponent,
 } from "@/components/molecules";
@@ -12,21 +11,19 @@ import {
   removeItemFromShoppingCart,
 } from "@/app/server-actions/shopping-cart";
 
-const fontMontserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-});
+type AvailableTicketType = {
+  id: string;
+  type: string;
+  price: number;
+  description: string;
+  availableQuantity: number;
+  totalQuantity: number;
+};
 
 type TicketSelectorProps = {
   event: {
     id: string;
-    ticketTypes: {
-      id: string;
-      type: string;
-      price: number;
-      description: string;
-      quantity: number;
-    }[];
+    availabeTicketTypes: AvailableTicketType[];
   };
   shoppingCartId: string;
   shoppingCartItems: {
@@ -35,21 +32,23 @@ type TicketSelectorProps = {
 };
 
 export function TicketSelector({
-  event: { ticketTypes },
+  event: { availabeTicketTypes },
   shoppingCartId,
   shoppingCartItems,
 }: TicketSelectorProps) {
   const handleAddToBasket = async (
-    ticketType: events.TicketType,
+    ticketType: AvailableTicketType,
     quantity: number
   ) => {
-    await addItemToShoppingCart({
+    const response = await addItemToShoppingCart({
       shoppingCartId,
-      tickets: {
-        ticketId: ticketType.id,
+      items: {
+        itemId: ticketType.id,
         quantity,
       },
     });
+
+    return response.result;
   };
 
   const handleRemoveFromBasket = async (itemId: string) => {
@@ -58,38 +57,29 @@ export function TicketSelector({
 
   const ticketsInShoppingCart = R.pipe(
     shoppingCartItems,
-    R.map(({ itemId }) => ticketTypes.find(({ id }) => id === itemId)),
+    R.map(({ itemId }) => availabeTicketTypes.find(({ id }) => id === itemId)),
     R.filter((ticketType) => !!ticketType),
     R.groupBy((ticketType) => ticketType!.id)
   );
 
   return (
     <div className="flex flex-col justify-start w-full">
-      <h2
-        className={`uppercase font-bold text-xl antialiased ${fontMontserrat.className}`}
-      >
-        Jegytípusok
-      </h2>
-      <div className="mt-2 flex flex-1 flex-col gap-2">
-        {ticketTypes.map((ticketType) => (
+      <PageSection title="Jegytípusok">
+        {availabeTicketTypes.map((ticketType) => (
           <TicketTypeComponent
             key={ticketType.id}
             name={ticketType.type}
             price={ticketType.price}
             description={ticketType.description}
-            availableQuantity={ticketType.quantity}
+            availableQuantity={ticketType.availableQuantity}
             onTicketTypeSelected={(quantity) =>
               handleAddToBasket(ticketType, quantity)
             }
           />
         ))}
-      </div>
-      <h2
-        className={`uppercase font-bold text-xl antialiased ${fontMontserrat.className}`}
-      >
-        Shopping carts
-      </h2>
-      <div className="mt-2 flex flex-1 flex-col gap-2">
+      </PageSection>
+
+      <PageSection title="Kosaram tartalma" classNames="mt-8">
         {Object.entries(ticketsInShoppingCart).map(([itemId, ticket]) => (
           <ShoppingCartItem
             key={itemId}
@@ -100,7 +90,7 @@ export function TicketSelector({
             onRemoveFromShoppingCart={() => handleRemoveFromBasket(itemId)}
           />
         ))}
-      </div>
+      </PageSection>
     </div>
   );
 }

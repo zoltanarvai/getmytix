@@ -16,3 +16,15 @@ export async function getTicketById(
 
   return ticketSchema.parse(ticket);
 }
+
+export async function getTicketsForEvent(
+  eventId: string
+): Promise<TicketRecord[]> {
+  const db = await getDB();
+  const tickets = await db
+    .collection("tickets")
+    .find({ eventId: eventId })
+    .toArray();
+
+  return tickets.map((ticket) => ticketSchema.parse(ticket));
+}

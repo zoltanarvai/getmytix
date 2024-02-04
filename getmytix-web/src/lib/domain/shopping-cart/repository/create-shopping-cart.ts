@@ -1,14 +1,19 @@
-import { getDB } from "../../../mongodb";
+import { getDB } from "@/lib/mongodb";
+import { ShoppingCartRecord } from ".";
 
 export async function createShoppingCart(
   sessionId: string,
-  subdomain: string
-): Promise<string> {
+  subdomain: string,
+  eventId: string
+): Promise<ShoppingCartRecord> {
   try {
     const shoppingCart = {
       sessionId: sessionId,
       subdomain: subdomain,
+      eventId: eventId,
       items: [],
+      createdAt: new Date().toUTCString(),
+      updatedAt: new Date().toUTCString(),
     };
 
     const db = await getDB();
@@ -16,7 +21,10 @@ export async function createShoppingCart(
       .collection("shoppingCarts")
       .insertOne(shoppingCart);
 
-    return document.insertedId.toHexString();
+    return {
+      _id: document.insertedId,
+      ...shoppingCart,
+    };
   } catch (error) {
     console.error("Could not create shopping cart", error);
     throw error;

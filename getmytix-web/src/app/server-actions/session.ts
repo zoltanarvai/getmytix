@@ -1,6 +1,6 @@
 "use server";
 import { z } from "zod";
-import { session, users } from "@/lib/domain";
+import { session, customers } from "@/lib/domain";
 
 const createSessionPropsSchema = z.object({
   email: z.string().email(),
@@ -15,14 +15,14 @@ export async function createSession(
 
   const { email } = request;
 
-  const user = await users.getUser(email);
-  let userId = user?.id;
+  const customer = await customers.getCustomerByEmail(email);
+  let customerId = customer?.id;
 
-  if (!user) {
-    userId = await users.createUser(email);
+  if (!customerId) {
+    customerId = await customers.createCustomer(email);
   }
 
-  const sessionId = await session.createSessionId(userId!);
+  const { id } = await session.createSession(customerId);
 
-  return sessionId;
+  return id;
 }

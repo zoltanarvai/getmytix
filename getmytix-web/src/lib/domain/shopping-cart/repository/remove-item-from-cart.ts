@@ -1,5 +1,5 @@
-import { getDB } from "../../../mongodb";
 import { ObjectId } from "mongodb";
+import { getDB } from "@/lib/mongodb";
 
 export async function removeItemFromCart(
   shoppingCartId: string,
@@ -11,7 +11,10 @@ export async function removeItemFromCart(
 
     const updateResult = await collection.updateOne(
       { _id: new ObjectId(shoppingCartId) },
-      { $pull: { items: { itemId: itemId } } }
+      {
+        $pull: { items: { itemId: itemId } },
+        $set: { updatedAt: new Date().toUTCString() },
+      }
     );
 
     if (updateResult.modifiedCount === 0) {

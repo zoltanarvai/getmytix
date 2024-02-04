@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEvent } from "@/lib/domain/events";
 import { TicketSelector } from "@/components/organisms";
 import { Button } from "@/components/ui/button";
-import { session } from "@/lib/domain";
-import { shoppingCart } from "@/lib/domain";
+import { session, events, shoppingCart } from "@/lib/domain";
+import { PageTitles } from "@/components/molecules";
 
 type TicketProps = {
   params: {
@@ -13,8 +12,8 @@ type TicketProps = {
 };
 
 export default async function Tickets({ params: { subdomain } }: TicketProps) {
-  const event = await getEvent(subdomain);
-  const sessionId = session.getSessionId();
+  const event = await events.getEventBySubdomain(subdomain);
+  const sessionId = session.getCurrentSessionId();
 
   if (!event) {
     return notFound();
@@ -24,43 +23,38 @@ export default async function Tickets({ params: { subdomain } }: TicketProps) {
     throw new Error("No session has been established");
   }
 
-  const shoppingCartId = await shoppingCart.ShoppingCart.initialize(
+  const initialisedShoppingCart = await shoppingCart.initialize(
     sessionId,
     subdomain
   );
 
-  const items = await shoppingCart.ShoppingCart.getShoppingCartItems(
-    shoppingCartId
-  );
+  const availableQuantityPerTicketType =
+    await events.getAvailableQuantityPerTicketType(event.id);
 
   return (
-    <main className="flex flex-col max-w-screen-lg m-auto gap-2">
-      <section className="flex self-center flex-col mt-20 items-center">
-        <h1 className="text-6xl font-bold tracking-tight">{event.name}</h1>
-        <h2 className="text-2xl text-gray-500 mt-2 text-center">
-          {event.description}
-        </h2>
-      </section>
+    <main className="flex min-h-screen flex-col max-w-screen-lg m-auto gap-2">
+      <PageTitles title={event.name} subtitle={event.description} />
 
-      <section className="flex flex-1 flex-col items-center justify-center m-8">
+      <section className="flex flex-1 flex-col items-center justify-center mb-8">
         <TicketSelector
           event={{
             ...event,
-            ticketTypes: event.ticketTypes.map((ticketType) => ({
+            availabeTicketTypes: event.ticketTypes.map((ticketType) => ({
               ...ticketType,
-              quantityInShoppingCart: 0,
+              availableQuantity: availableQuantityPerTicketType[ticketType.id],
+              totalQuantity: ticketType.quantity,
             })),
           }}
-          shoppingCartId={shoppingCartId}
-          shoppingCartItems={items}
+          shoppingCartId={initialisedShoppingCart.id}
+          shoppingCartItems={initialisedShoppingCart.items}
         />
 
-        <Link className="mt-8" href={`checkout/${shoppingCartId}`}>
+        <Link className="mt-8" href={`checkout/${initialisedShoppingCart.id}`}>
           <Button
-            className="text-xl font-bold rounded-full px-6 py-6"
-            disabled={items.length == 0}
+            className="text-xl px-6 py-6"
+            disabled={initialisedShoppingCart.items.length == 0}
           >
-            Fizetés
+            Tovább a fizetéshez
           </Button>
         </Link>
       </section>

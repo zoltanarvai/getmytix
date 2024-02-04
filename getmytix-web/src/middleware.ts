@@ -44,7 +44,7 @@ export default async function middleware(req: NextRequest) {
     `${domain}.${rootDomain}` === process.env.NEXT_PUBLIC_ROOT_DOMAIN &&
     subDomain !== "www"
   ) {
-    console.log("rewriting to event page", "/events/${subDomain}", req.url);
+    console.debug("rewriting to event page", "/events/${subDomain}", req.url);
     return NextResponse.rewrite(
       new URL(`/events/${subDomain}${path === "/" ? "" : path}`, req.url)
     );

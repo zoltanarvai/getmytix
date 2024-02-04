@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getDB } from "../../../mongodb";
+import { getDB } from "@/lib/mongodb";
 
 export async function deleteShoppingCart(
   shoppingCartId: string

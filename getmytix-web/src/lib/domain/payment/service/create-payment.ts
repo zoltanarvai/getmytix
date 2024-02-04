@@ -7,7 +7,7 @@ import {
 const merchantKey: string = process.env.MERCHANT_KEY!;
 const merchant: string = process.env.MERCHANT_ID!;
 
-type PaymentStartResponse = {
+export type PaymentStartResponse = {
   salt: string;
   merchant: string;
   orderRef: string;

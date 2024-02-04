@@ -1,13 +1,10 @@
-import { z } from "zod";
 import { getDB } from "../../../mongodb";
 import { ObjectId } from "mongodb";
-import { historyItemSchema } from "./schema";
-
-export type AddHistoryItem = z.infer<typeof historyItemSchema>;
+import { historyItemSchema, HistoryItem } from "./schema";
 
 export async function addHistoryItem(
   orderId: string,
-  historyItem: AddHistoryItem
+  historyItem: HistoryItem
 ): Promise<void> {
   try {
     const entry = historyItemSchema.parse(historyItem);

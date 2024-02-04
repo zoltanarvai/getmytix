@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Bars4Icon, ClockIcon, MapPinIcon } from "@heroicons/react/24/solid";
-import { getEvent } from "@/lib/domain/events";
+import { events } from "@/lib/domain";
 import { StartBuyingSession } from "@/components/organisms";
-import { EventDetailBox } from "@/components/molecules";
+import { EventDetailBox, PageTitles } from "@/components/molecules";
 
 type EventProps = {
   params: {
@@ -16,14 +16,16 @@ const formatDateTime = (startDateTime: string, endDateTime?: string) => {
     return new Date(startDateTime).toLocaleString("hu-HU");
   }
 
-  console.log(startDateTime, endDateTime);
+  const startDate = new Date(startDateTime).toLocaleString("hu-HU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+  // const endDate = new Date(endDateTime).toLocaleString("hu-HU");
 
-  const startDate = new Date(startDateTime).toLocaleString("hu-HU");
-  const endDate = new Date(endDateTime).toLocaleString("hu-HU");
-
-  console.log(startDate, endDate);
-
-  return `${startDate} - ${endDate}`;
+  return `${startDate}`;
 };
 
 const formatDescription = (description: string) => {
@@ -35,7 +37,7 @@ const formatAddress = (city: string, street: string, zipCode: string) => {
 };
 
 export default async function Event({ params: { subdomain } }: EventProps) {
-  const event = await getEvent(subdomain);
+  const event = await events.getEventBySubdomain(subdomain);
 
   if (!event) {
     return notFound();
@@ -43,10 +45,7 @@ export default async function Event({ params: { subdomain } }: EventProps) {
 
   return (
     <main className="flex min-h-screen flex-col max-w-screen-lg m-auto gap-2">
-      <section className="flex self-center flex-col my-20 items-center">
-        <h1 className="text-6xl font-bold tracking-tight">{event.name}</h1>
-        <h2 className="text-2xl text-gray-500 mt-2">{event.description}</h2>
-      </section>
+      <PageTitles title={event.name} subtitle={event.description} />
 
       <Image
         src={event.banner}
@@ -80,7 +79,7 @@ export default async function Event({ params: { subdomain } }: EventProps) {
           )}
         />
       </section>
-      <section className="flex flex-1 items-center justify-center m-8">
+      <section className="flex flex-1 items-center justify-center my-8">
         <StartBuyingSession />
       </section>
     </main>

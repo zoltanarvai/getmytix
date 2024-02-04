@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { ObjectId } from "mongodb";
 import { getDB } from "@/lib/mongodb";
-import { Domain, Optional } from "../types";
+import { Maybe } from "../../../types";
 
-export const ticketSchema = z.object({
+export const ticketTypeSchema = z.object({
   id: z.string(),
   type: z.string(),
   price: z.number(),
@@ -11,7 +11,7 @@ export const ticketSchema = z.object({
   description: z.string(),
 });
 
-export type TicketType = z.infer<typeof ticketSchema>;
+export type TicketType = z.infer<typeof ticketTypeSchema>;
 
 export const eventSchema = z.object({
   _id: z.instanceof(ObjectId),
@@ -29,16 +29,16 @@ export const eventSchema = z.object({
     city: z.string(),
     zipCode: z.string(),
   }),
-  ticketTypes: z.array(ticketSchema),
+  ticketTypes: z.array(ticketTypeSchema),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
 
-export type Event = z.infer<typeof eventSchema>;
+export type EventRecord = z.infer<typeof eventSchema>;
 
-export async function getEvent(
+export async function getEventBySubdomain(
   subdomain: string
-): Promise<Optional<Domain<Event>>> {
+): Promise<Maybe<EventRecord>> {
   try {
     const db = await getDB();
     const document = await db.collection("events").findOne({
@@ -50,12 +50,7 @@ export async function getEvent(
       return null;
     }
 
-    const { _id, ...rest } = eventSchema.parse(document);
-
-    return {
-      id: document._id.toHexString(),
-      ...rest,
-    };
+    return eventSchema.parse(document);
   } catch (e) {
     console.error("Could not get event", e);
     return null;
@@ -64,7 +59,7 @@ export async function getEvent(
 
 export async function getEventById(
   eventId: string
-): Promise<Optional<Domain<Event>>> {
+): Promise<Maybe<EventRecord>> {
   try {
     const db = await getDB();
     const document = await db.collection("events").findOne({
@@ -76,12 +71,7 @@ export async function getEventById(
       return null;
     }
 
-    const { _id, ...rest } = eventSchema.parse(document);
-
-    return {
-      id: document._id.toHexString(),
-      ...rest,
-    };
+    return eventSchema.parse(document);
   } catch (e) {
     console.error("Could not get event", e);
     return null;

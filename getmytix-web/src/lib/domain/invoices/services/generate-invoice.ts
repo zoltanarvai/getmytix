@@ -1,13 +1,13 @@
-import AWS from "aws-sdk";
 import { z } from "zod";
+import { SQS } from "@aws-sdk/client-sqs";
 
-const sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
+const sqs = new SQS({ apiVersion: "2012-11-05", region: "eu-central-1" });
 
 const queueURL = process.env.INVOICING_QUEUE_URL;
 
 const invoicingDetailsSchema = z.object({
   orderId: z.string(),
-  customerDetails: z.object({
+  billingDetails: z.object({
     name: z.string(),
     street: z.string(),
     streetNumber: z.string(),
@@ -17,10 +17,10 @@ const invoicingDetailsSchema = z.object({
     country: z.string(),
     phone: z.string().optional(),
   }),
-  tickets: z.array(
+  items: z.array(
     z.object({
-      ticketTypeId: z.string(),
-      ticketType: z.string(),
+      itemId: z.string(),
+      itemType: z.string(),
       quantity: z.number(),
       unitPrice: z.number(),
     })
@@ -35,12 +35,10 @@ export async function generateInvoice(
   const message = invoicingDetailsSchema.parse(details);
 
   // Send the message to the specified queue
-  const result = await sqs
-    .sendMessage({
-      QueueUrl: queueURL!,
-      MessageBody: JSON.stringify(message),
-    })
-    .promise();
+  const result = await sqs.sendMessage({
+    QueueUrl: queueURL!,
+    MessageBody: JSON.stringify(message),
+  });
 
   if (result.MessageId) {
     console.log(`Invoice message sent successfully: ${result.MessageId}`);

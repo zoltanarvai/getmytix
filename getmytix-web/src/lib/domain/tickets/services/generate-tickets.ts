@@ -1,9 +1,7 @@
-import AWS from "aws-sdk";
 import { z } from "zod";
+import { SQS } from "@aws-sdk/client-sqs";
 
-AWS.config.update({ region: "eu-central-1" });
-
-const sqs = new AWS.SQS({ apiVersion: "2012-11-05", region: "eu-central-1" });
+const sqs = new SQS({ apiVersion: "2012-11-05", region: "eu-central-1" });
 
 const queueURL = process.env.TICKETS_QUEUE_URL;
 
@@ -23,6 +21,7 @@ const ticketGenerationRequestSchema = z.object({
     description: z.string(),
     notes: z.string(),
     startDate: z.string(),
+    endDate: z.string().optional(),
     address: z.object({
       street: z.string(),
       city: z.string(),
@@ -45,12 +44,10 @@ export async function generateTickets(
   const message = ticketGenerationRequestSchema.parse(details);
 
   // Send the message to the specified queue
-  const result = await sqs
-    .sendMessage({
-      QueueUrl: queueURL!,
-      MessageBody: JSON.stringify(message),
-    })
-    .promise();
+  const result = await sqs.sendMessage({
+    QueueUrl: queueURL!,
+    MessageBody: JSON.stringify(message),
+  });
 
   if (result.MessageId) {
     console.log(

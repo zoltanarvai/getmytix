@@ -1,5 +1,5 @@
 import { ShoppingCartItem } from "./schema";
-import { getDB } from "../../../mongodb";
+import { getDB } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export async function addItemsToCart(
@@ -12,7 +12,10 @@ export async function addItemsToCart(
 
     const updateResult = await collection.updateOne(
       { _id: new ObjectId(shoppingCartId) },
-      { $push: { items: { $each: items } } }
+      {
+        $push: { items: { $each: items } },
+        $set: { updatedAt: new Date().toUTCString() },
+      }
     );
 
     if (updateResult.modifiedCount !== 1) {

@@ -24,7 +24,7 @@ export const EventDetailBox = ({
       <CardHeader className="flex flex-row gap-2 items-center">
         <div>{icon}</div>
         <CardTitle
-          className={`uppercase font-bold text-xl antialiased ${fontMontserrat.className}`}
+          className={`uppercase font-bold text-xl max-md:text-lg antialiased ${fontMontserrat.className}`}
         >
           {title}
         </CardTitle>

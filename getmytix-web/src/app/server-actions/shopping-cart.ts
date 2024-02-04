@@ -6,8 +6,8 @@ import { revalidatePath } from "next/cache";
 
 const updateShoppingCartPropsSchema = z.object({
   shoppingCartId: z.string(),
-  tickets: z.object({
-    ticketId: z.string(),
+  items: z.object({
+    itemId: z.string(),
     quantity: z.number(),
   }),
 });
@@ -16,20 +16,24 @@ type UpdateShoppingCartProps = z.infer<typeof updateShoppingCartPropsSchema>;
 
 export async function addItemToShoppingCart(
   updateShoppingCartProps: UpdateShoppingCartProps
-): Promise<void> {
+): Promise<{
+  result: "added" | "not-enough-tickets";
+}> {
   const validatesShoppingCart = updateShoppingCartPropsSchema.parse(
     updateShoppingCartProps
   );
 
-  const { tickets, shoppingCartId } = validatesShoppingCart;
+  const { items, shoppingCartId } = validatesShoppingCart;
 
-  await shoppingCart.ShoppingCart.addItems(
+  const result = await shoppingCart.addItems(
     shoppingCartId,
-    tickets.ticketId,
-    tickets.quantity
+    items.itemId,
+    items.quantity
   );
 
-  revalidatePath("/checkout");
+  revalidatePath("/tickets");
+
+  return result;
 }
 
 const removeShoppingCartItemSchema = z.object({
@@ -48,7 +52,7 @@ export async function removeItemFromShoppingCart(
 
   const { itemId, shoppingCartId } = validatedRequest;
 
-  await shoppingCart.ShoppingCart.removeItem(shoppingCartId, itemId);
+  await shoppingCart.removeItem(shoppingCartId, itemId);
 
-  revalidatePath("/checkout");
+  revalidatePath("/tickets");
 }

@@ -1,5 +1,4 @@
-import { ShoppingCartItem } from "./schema";
-import { getDB } from "../../../mongodb";
+import { getDB } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export async function clearShoppingCart(shoppingCartId: string): Promise<void> {
@@ -9,7 +8,7 @@ export async function clearShoppingCart(shoppingCartId: string): Promise<void> {
 
     const updateResult = await collection.updateOne(
       { _id: new ObjectId(shoppingCartId) },
-      { $set: { items: [] } }
+      { $set: { items: [], updatedAt: new Date().toUTCString() } }
     );
 
     if (updateResult.modifiedCount !== 1) {

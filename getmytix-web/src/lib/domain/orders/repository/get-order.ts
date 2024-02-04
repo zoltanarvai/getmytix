@@ -1,12 +1,9 @@
-import { z } from "zod";
-import { getDB } from "../../../mongodb";
 import { ObjectId } from "mongodb";
-import { Optional } from "../../../types";
+import { getDB } from "@/lib/mongodb";
+import { Maybe } from "@/lib/types";
 import { OrderRecord, orderSchema } from "./schema";
 
-export async function getOrder(
-  orderId: string
-): Promise<Optional<OrderRecord>> {
+export async function getOrder(orderId: string): Promise<Maybe<OrderRecord>> {
   try {
     const db = await getDB();
     const document = await db.collection("orders").findOne({

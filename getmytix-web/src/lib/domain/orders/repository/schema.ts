@@ -1,5 +1,5 @@
-import { ObjectId } from "mongodb";
 import { z } from "zod";
+import { ObjectId } from "mongodb";
 
 export const historyItemSchema = z.object({
   timestamp: z.string(),
@@ -9,24 +9,26 @@ export const historyItemSchema = z.object({
     "cancelled",
     "refunded",
     "invoiced",
-    "completed",
+    "issued",
   ]),
 });
+
+export type HistoryItem = z.infer<typeof historyItemSchema>;
 
 export const orderItemSchema = z.object({
   itemId: z.string(),
   unitPrice: z.number(),
 });
 
+export type OrderItem = z.infer<typeof orderItemSchema>;
+
 export const orderSchema = z.object({
   _id: z.instanceof(ObjectId),
-  user: z.object({
-    email: z.string(),
-    id: z.string(),
-  }),
   shoppingCartId: z.string(),
   eventId: z.string(),
   customerDetails: z.object({
+    id: z.string(),
+    email: z.string(),
     name: z.string(),
     street: z.string(),
     streetNumber: z.string(),
@@ -36,10 +38,18 @@ export const orderSchema = z.object({
     country: z.string(),
     phone: z.string().optional(),
   }),
-  tickets: z.array(orderItemSchema),
+  items: z.array(orderItemSchema),
   history: z.array(historyItemSchema).optional().default([]),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
 
 export type OrderRecord = z.infer<typeof orderSchema>;
+
+export const createOrderSchema = orderSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type CreateOrder = z.infer<typeof createOrderSchema>;

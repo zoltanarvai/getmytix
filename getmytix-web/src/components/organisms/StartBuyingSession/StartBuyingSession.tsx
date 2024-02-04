@@ -45,23 +45,22 @@ export function StartBuyingSession({ hideTitle }: StartBuyingSessionProps) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 w-full">
       {!hideTitle && <h1 className="text-2xl font-bold">Csatlakozom!</h1>}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col items-center gap-4"
+          className="flex flex-col items-center gap-4 w-full"
         >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full max-w-96">
                 <FormControl>
                   <Input
                     placeholder="add meg az e-mail címed"
-                    // type="email"
-                    className="w-96 text-center text-md"
+                    className="text-center text-md"
                     {...field}
                   />
                 </FormControl>

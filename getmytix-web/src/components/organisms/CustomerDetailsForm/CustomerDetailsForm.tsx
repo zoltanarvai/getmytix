@@ -50,173 +50,165 @@ export function CustomerDetailsForm({
   };
 
   return (
-    <div className="flex flex-col justify-start w-full mt-8">
-      <h2
-        className={`uppercase font-bold text-xl antialiased ${fontMontserrat.className}`}
-      >
-        Vásárló adatai
-      </h2>
+    <Card className="flex flex-col gap-4 py-4 mb-8">
+      <CardContent>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <TwoColumnLayout>
+              <Column>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Teljes név</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Teljes név"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="street"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Utca</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Utca"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="streetNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Házszám</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Házszám"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Város</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Város"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Column>
 
-      <Card className="flex flex-col gap-4 p-4 mt-2">
-        <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
+              <Column>
+                <FormField
+                  control={form.control}
+                  name="zip"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Irányítószám</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Irányítószám"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Megye</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Megye"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Ország</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Ország"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold">Telefonszám</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Telefonszám"
+                          className="text-md max-w-96"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Column>
+            </TwoColumnLayout>
+            <Button
+              type="submit"
+              className="text-xl font-bold rounded-full px-6 py-6 self-center mt-8 w-44"
             >
-              <TwoColumnLayout>
-                <Column>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Teljes név</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Teljes név"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="street"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Utca</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Utca"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="streetNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Házszám</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Házszám"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Telefonszám</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Telefonszám"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Column>
-
-                <Column>
-                  <FormField
-                    control={form.control}
-                    name="zip"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Irányítószám</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Irányítószám"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Város</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Város"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Megye</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Megye"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ország</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Ország"
-                            className="md:w-96 w-80 text-md"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Column>
-              </TwoColumnLayout>
-              <Button
-                type="submit"
-                className="text-xl font-bold rounded-full px-6 py-6 self-center mt-8 w-44"
-              >
-                Fizetés
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+              Fizetés
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }

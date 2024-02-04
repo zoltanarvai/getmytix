@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
-import { getDB } from "../../../mongodb";
-import { Optional } from "../../../types";
-import { ShoppingCart, shoppingCartSchema } from "./schema";
+import { getDB } from "@/lib/mongodb";
+import { Maybe } from "@/lib/types";
+import { ShoppingCartRecord, shoppingCartSchema } from "./schema";
 
 export async function getShoppingCart(
   sessionId: string,
   subdomain: string
-): Promise<Optional<ShoppingCart>> {
+): Promise<Maybe<ShoppingCartRecord>> {
   try {
     const db = await getDB();
     const document = await db.collection("shoppingCarts").findOne({
@@ -30,7 +30,7 @@ export async function getShoppingCart(
 
 export async function getShoppingCartById(
   shoppingCartId: string
-): Promise<Optional<ShoppingCart>> {
+): Promise<Maybe<ShoppingCartRecord>> {
   try {
     const db = await getDB();
     const document = await db

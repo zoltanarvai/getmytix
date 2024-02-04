@@ -1,7 +1,10 @@
 "use server";
 
-import { orders, payment, session, users, events } from "@/lib/domain";
 import { z } from "zod";
+import { orders, payment, session, customers } from "@/lib/domain";
+
+const HOST = process.env.HOST || "localhost:3000";
+const SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
 
 const createOrderSchema = z.object({
   customerDetails: z.object({
@@ -14,7 +17,6 @@ const createOrderSchema = z.object({
     country: z.string(),
     phone: z.string().optional(),
   }),
-  sessionId: z.string(),
   subdomain: z.string(),
   shoppingCartId: z.string(),
 });
@@ -23,40 +25,55 @@ type CreateOrderProps = z.infer<typeof createOrderSchema>;
 
 export async function createOrder(
   createOrderRequest: CreateOrderProps
-): Promise<string> {
+): Promise<{
+  redirectUrl: string;
+  mode: "payment" | "confirmation";
+}> {
   const validRequest = createOrderSchema.parse(createOrderRequest);
 
-  const currentSession = await session.getSession(validRequest.sessionId);
-  const user = await users.getUserById(currentSession.userId);
-  const event = await events.getEvent(validRequest.subdomain);
-
-  if (!user) {
-    throw new Error("User not found");
+  const currentSessionId = session.getCurrentSessionId();
+  if (!currentSessionId) {
+    throw new Error("No active session found");
   }
 
-  if (!event) {
-    throw new Error("Event not found");
+  const currentSession = await session.getSession(currentSessionId);
+  if (!currentSession) {
+    throw new Error("Session not found");
+  }
+
+  const customer = await customers.getCustomerById(currentSession.customerId);
+
+  if (!customer) {
+    throw new Error("Customer not found");
   }
 
   // At this point the shopping cart is already created explaining which ticket type the user wants to buy
   // and how many. Tickets are not reserved yet.
-  const orderId = await orders.Order.createOrder(
-    validRequest.shoppingCartId,
-    validRequest.customerDetails,
-    user,
-    event
-  );
+  const orderId = await orders.createOrder(validRequest.shoppingCartId, {
+    ...validRequest.customerDetails,
+    ...customer,
+  });
 
   // We know the total amount based on the basket value and what's being ordered
-  const totalAmount = await orders.Order.calculateTotal(orderId);
+  const totalAmount = await orders.calculateTotalOrderValue(orderId);
+
+  if (totalAmount === 0) {
+    return {
+      redirectUrl: `/free-checkout-complete?orderId=${orderId}`,
+      mode: "confirmation",
+    };
+  }
 
   // Kick off Payment
-  const paymentResponse = await payment.createPayment(
-    orderId,
-    user.email,
-    totalAmount.toString(),
-    `http://${event.subdomain}.localhost:3000/checkout-complete`
-  );
+  const paymentResponse = await payment.createPayment({
+    orderId: orderId,
+    customerEmail: customer.email,
+    amount: totalAmount.toString(),
+    redirectUrl: `${SCHEME}://${validRequest.subdomain}.${HOST}/payment-complete`,
+  });
 
-  return paymentResponse.paymentUrl;
+  return {
+    redirectUrl: paymentResponse.paymentUrl,
+    mode: "payment",
+  };
 }
