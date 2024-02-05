@@ -20,6 +20,7 @@ export async function POST(request: Request) {
 
   // validate request body
   const body = await request.json();
+  console.info("Request body", body);
   const updateRequest = requestSchema.parse(body);
 
   // get ticket id from URL

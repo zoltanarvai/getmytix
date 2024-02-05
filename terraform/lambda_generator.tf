@@ -115,7 +115,6 @@ resource "aws_lambda_function" "lambda_generator" {
     variables = {
       TICKET_PRINT_QUEUE_DLQ_URL = aws_sqs_queue.ticket_print_dlq.url
       TICKETS_BUCKET_NAME        = aws_s3_bucket.tickets.bucket
-      WEBHOOKS_URL               = var.getmytix_webhook_domain
       MAILER_SEND_API_KEY        = var.mailer_send_api_key
       WEBHOOKS_SECRET            = var.getmytix_webhook_secret
     }

@@ -84,36 +84,27 @@ class TicketManager:
 
         logging.info(f"Tickets sent to {customer_details.name} <{customer_details.email}>")
 
-    def update_ticket_statuses(self, ticket_info: list[tuple[str, Ticket]]):
-        async def update_all_tickets():
+    def update_order_and_tickest(self, order: Order, ticket_info: list[tuple[str, Ticket]]):
+        async def update_all():
             tasks = [
                 self._webhooks.update_ticket(
                     ticket_id=ticket.ticket_id,
                     ticket_callback_url=ticket.ticket_callback_url,
                     status="printed",
-                    payload={"ticket_url": ticket_url}
+                    payload={"ticketUrl": ticket_url}
                 )
                 for ticket_url, ticket in ticket_info
             ]
+
             await asyncio.gather(*tasks)
+            logging.info("Ticket statuses updated")
 
-        # Run the asynchronous tasks from a synchronous context
-        asyncio.run(update_all_tickets())
-
-        logging.info("Ticket statuses updated")
-
-    def update_order_delivered(self, order: Order):
-        async def update_order():
-            tasks = [
-                self._webhooks.update_order(
+            await self._webhooks.update_order(
                     order_id=order.order_id,
                     order_callback_url=order.order_callback_url,
                     status="delivered"
                 )
-            ]
-            await asyncio.gather(*tasks)
+            logging.info("Order statuses updated")
 
         # Run the asynchronous tasks from a synchronous context
-        asyncio.run(update_order())
-
-        logging.info("Order statuses updated")
+        asyncio.run(update_all())

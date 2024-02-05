@@ -28,7 +28,7 @@ class Webhooks:
             raise Exception(f"Failed to update ticket {ticket_id} to status {status} with payload {payload}")
 
     async def update_order(self, order_id: str, order_callback_url: str, status: Literal['delivered'],
-                           payload: Optional[dict] = None):
+                           payload: Optional[dict] = {}):
         logging.info(f"Updating order {order_id} to status {status} with payload {payload}")
 
         response = await self._httpx_client.post(order_callback_url, json={
