@@ -92,5 +92,8 @@ export async function updateOrderStatus(
 ): Promise<void> {
   console.info("updating order status", orderId, status);
 
-  await repository.updateOrderStatus(orderId, status);
+  await repository.addHistoryItem(orderId, {
+    timestamp: new Date().toUTCString(),
+    event: status,
+  });
 }
