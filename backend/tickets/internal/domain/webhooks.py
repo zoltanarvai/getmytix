@@ -1,6 +1,6 @@
 import logging
 
-from httpx import AsyncClient
+from httpx import AsyncClient, Limits
 from typing import Optional, Literal
 
 
@@ -8,6 +8,7 @@ class Webhooks:
     def __init__(self, secret: str):
         self._secret = secret
         self._httpx_client = AsyncClient(
+            limits=Limits(max_connections=100, max_keepalive_connections=20),
             headers={
                 "x-api-key": f"{self._secret}"
             },
