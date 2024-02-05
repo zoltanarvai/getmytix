@@ -9,7 +9,7 @@ class Webhooks:
         self._secret = secret
         self._httpx_client = AsyncClient(
             headers={
-                "Authorization": f"{self._secret}"
+                "x-api-key": f"{self._secret}"
             },
         )
 

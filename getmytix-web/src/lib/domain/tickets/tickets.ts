@@ -6,6 +6,8 @@ import * as repository from "./repository";
 
 export type Ticket = Domain<repository.TicketRecord>;
 
+const HTTP_SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
+
 export async function getTicketsForEvent(eventId: string): Promise<Ticket[]> {
   const tickets = await repository.getTicketsForEvent(eventId);
 
@@ -55,7 +57,7 @@ export async function generateTickets(
         ticketTypeId: orderedTicket.itemId,
         ticketType: ticketType.type,
         unitPrice: ticketType.price,
-        ticketCallbackUrl: `https://${event.subdomain}.${
+        ticketCallbackUrl: `${HTTP_SCHEME}://${event.subdomain}.${
           process.env.HOST
         }/api/tickets/${ticket._id.toHexString()}`,
       };
@@ -64,7 +66,7 @@ export async function generateTickets(
 
   await services.generateTickets({
     orderId: order.id,
-    orderCallbackUrl: `https://${event.subdomain}.${process.env.HOST}/api/orders/${order.id}`,
+    orderCallbackUrl: `${HTTP_SCHEME}://${event.subdomain}.${process.env.HOST}/api/orders/${order.id}`,
     tickets,
     eventDetails: {
       id: event.id,
@@ -86,12 +88,13 @@ export async function generateTickets(
 
 export async function setTicketStatus(
   ticketId: string,
-  status: repository.TicketStatus
+  status: repository.TicketStatus,
+  ticketUrl?: string
 ): Promise<void> {
   const ticket = await repository.getTicketById(ticketId);
   if (!ticket) {
     throw new Error(`Ticket ${ticketId} not found`);
   }
 
-  await repository.updateTicket(ticketId, status);
+  await repository.updateTicket(ticketId, status, ticketUrl);
 }
