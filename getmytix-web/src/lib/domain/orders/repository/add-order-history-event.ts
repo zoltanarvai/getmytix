@@ -1,4 +1,4 @@
-import { getDB } from "../../../mongodb";
+import { getDB } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { historyItemSchema, HistoryItem } from "./schema";
 

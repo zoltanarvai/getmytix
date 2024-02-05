@@ -4,7 +4,8 @@ import { TicketStatus } from "./schema";
 
 export async function updateTicket(
   ticketId: string,
-  status: TicketStatus
+  status: TicketStatus,
+  ticketUrl?: string
 ): Promise<void> {
   const db = await getDB();
 
@@ -13,6 +14,7 @@ export async function updateTicket(
     {
       $set: {
         status,
+        ticketUrl: ticketUrl || "",
         updatedAt: new Date().toUTCString(),
       },
     }

@@ -7,21 +7,19 @@ if __name__ == "__main__":
 
     handler(
         {
-            'Records': [
-                {
-                    'messageId': '8dc0135e-8bdf-4667-856e-f99ab9a984cc',
-                    'receiptHandle': 'AQEBtbY/hxJryf0JIpyvaI6H4stLAe8sKYR6VS885GjT/SDraMFbLWbwQlYQScrqac/48ODdJQ1icjMtshjgNUYxuI/4vCqf75huY9LUKH9Rz2sOd8MSQ8vNckbAc59F/kSKwJlYI3aYwIK/x2mMrlC+um3bMRSkGrBBMB9UVugzjMxh8QiLXVuLGvwO8oiEPqyg0CJRtPZDRbZIXxiPOIFVfc4ro6ILPNg87xBqZu3jGe6564jSspuT00gYEW34BJ9aFWDxBYoBxXvHDv3qRbca79VrevcmREM0YsBhbmu0/rsY8p/ML/C062u7aR5f17RdY0DobbDqgn3V3bcYjnMUmq1koV4sKoAEJvikuM16KpxBMNWgeUeY/pZ4WEUh02BSPEkak0GRNZIGY0KooN/DQ5nr1vLeQZUae8tcqHLI1LU=',
-                    'body': '{"orderId":"65bfef71ac32e7ca2256e865","tickets":[{"ticketTypeId":"abc123","ticketType":"Standard","ticketId":"65bfef76ac32e7ca2256e866","unitPrice":19999},{"ticketTypeId":"abc123","ticketType":"Standard","ticketId":"65bfef76ac32e7ca2256e867","unitPrice":19999},{"ticketTypeId":"abc345","ticketType":"VIP","ticketId":"65bfef76ac32e7ca2256e868","unitPrice":39999},{"ticketTypeId":"def789","ticketType":"Free","ticketId":"65bfef76ac32e7ca2256e869","unitPrice":0},{"ticketTypeId":"def789","ticketType":"Free","ticketId":"65bfef76ac32e7ca2256e86a","unitPrice":0}],"eventDetails":{"id": "123", "name":"Vitorlázás 2024","logo":"logo","description":"Tölts velünk egy izgalmas, networking eseményt","notes":"Kerlek idoben erkezzen","startDate":"2024-06-01T10:00:00.000Z","endDate":"2024-06-01T18:00:00.000Z","address":{"street":"Marina kikötő","city":"Balatonfüred","zipCode":"2085"}},"customerDetails":{"name":"Zoltan Arvai","email":"zoltan.arvai@live.com"}}',
-                    'attributes': {
-                        'ApproximateReceiveCount': '1',
-                        'SentTimestamp': '1707077494758',
-                        'SenderId': 'AIDASG5YI76NDVMRXWT2D',
-                        'ApproximateFirstReceiveTimestamp': '1707077494766'
-                    },
-                    'messageAttributes': {},
-                    'md5OfBody': '56b83c8827fa1590ffb81204cf11135a', 'eventSource': 'aws:sqs',
-                    'eventSourceARN': 'arn:aws:sqs:eu-central-1:152320933786:getmytix-prod-tickets-queue',
-                    'awsRegion': 'eu-central-1'
-                }
-            ]
+            'Records': [{
+                'messageId': 'ac9ae1a5-acf2-4734-b4bb-9bf76543e522',
+                'receiptHandle': 'AQEB4vMrujTlJXv4ISGILODat1XKYzi05WZ74LaxHCNdVc7r5Bjvyj9JXqKcboV1qu2QABNMLVzO7nx4ffs39KttXTWurn8A+UuGs4E0kacyJmWA7LbjSfZbdmvBW16IjyEYqroEU3gzwmf8sJNrsVVOTI0iQG0JbqCwb1k3YgKojhKZa9R5udQO6ELtmBPXmlvbPsnhFVMA78lwXK9wNe82zYrWFmTcg+hgyc/cEMc4SeEKHAcaojRhJ3B1aFQ+VWbXPsj80ua8yZ8NP6mNcqAzS2cD36dIxIpUedrCrUqZ9hskRuV9FHWD0Lf3r057eAsjDi3gW1CAqRe/pn83Y/dnNxWSS/UoXmyi8/3iz5khNgZAe7I761ee24bj+CGBvw5+jFV0JX/h8//jTa9B4i0xk+6tU6BYa/h4uvw0uK9D7dQ=',
+                'body': '{"orderId":"65c0b08ba587c1ac6e34d533","orderCallbackUrl":"http://sailwithus.localhost:3000/api/orders/65c0b08ba587c1ac6e34d533","tickets":[{"ticketTypeId":"abc123","ticketType":"Standard","ticketId":"65c0b096a587c1ac6e34d535","unitPrice":19999,"ticketCallbackUrl":"http://sailwithus.localhost:3000/api/tickets/65c0b096a587c1ac6e34d535"},{"ticketTypeId":"abc123","ticketType":"Standard","ticketId":"65c0b096a587c1ac6e34d536","unitPrice":19999,"ticketCallbackUrl":"http://sailwithus.localhost:3000/api/tickets/65c0b096a587c1ac6e34d536"}],"eventDetails":{"id":"65b797f74a356f7ad7ed2322","name":"Vitorlázás 2024","subdomain":"sailwithus","logo":"logo","description":"Tölts velünk egy izgalmas, networking eseményt","notes":"Kerlek idoben erkezzen","startDate":"2024-06-01T10:00:00.000Z","endDate":"2024-06-01T18:00:00.000Z","address":{"street":"Marina kikötő","city":"Balatonfüred","zipCode":"2085"}},"customerDetails":{"name":"Zoltan Arvai","email":"zoltan.arvai@live.com"}}',
+                'attributes': {
+                    'ApproximateReceiveCount': '1',
+                    'SentTimestamp': '1707127817825',
+                    'SenderId': '152320933786',
+                    'ApproximateFirstReceiveTimestamp': '1707127817832'
+                },
+                'messageAttributes': {},
+                'md5OfBody': '9953b7b9a37e8b76c7fa85342563b0ad', 'eventSource': 'aws:sqs',
+                'eventSourceARN': 'arn:aws:sqs:eu-central-1:152320933786:getmytix-prod-tickets-queue',
+                'awsRegion': 'eu-central-1'
+            }]
         }, None)

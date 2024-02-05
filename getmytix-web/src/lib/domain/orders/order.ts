@@ -85,3 +85,12 @@ export async function fulfill(orderId: string): Promise<void> {
   await invoices.generateInvoice(order, event);
   await shoppingCarts.deleteCart(order.shoppingCartId);
 }
+
+export async function updateOrderStatus(
+  orderId: string,
+  status: repository.OrderStatus
+): Promise<void> {
+  console.info("updating order status", orderId, status);
+
+  await repository.updateOrderStatus(orderId, status);
+}

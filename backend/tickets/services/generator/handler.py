@@ -25,7 +25,6 @@ class Handler:
                 s3=boto3.client("s3"),
                 bucket_name=mandatory_env("TICKETS_BUCKET_NAME"),
                 webhooks=Webhooks(
-                    url=mandatory_env("WEBHOOKS_URL"),
                     secret=mandatory_env("WEBHOOKS_SECRET")
                 )
             )
@@ -71,5 +70,4 @@ class Handler:
         )
 
         # Call Webhooks to complete the order and update the tickets
-        self._ticket_manager.update_ticket_statuses(ticket_infos)
-        self._ticket_manager.update_order_delivered(order)
+        self._ticket_manager.update_order_and_tickest(order, ticket_infos)

@@ -1,16 +1,20 @@
 import { z } from "zod";
 import { ObjectId } from "mongodb";
 
+export const orderStatusSchema = z.union([
+  z.literal("created"),
+  z.literal("paid"),
+  z.literal("cancelled"),
+  z.literal("refunded"),
+  z.literal("invoiced"),
+  z.literal("delivered"),
+]);
+
+export type OrderStatus = z.infer<typeof orderStatusSchema>;
+
 export const historyItemSchema = z.object({
   timestamp: z.string(),
-  event: z.enum([
-    "created",
-    "paid",
-    "cancelled",
-    "refunded",
-    "invoiced",
-    "delivered",
-  ]),
+  event: orderStatusSchema,
 });
 
 export type HistoryItem = z.infer<typeof historyItemSchema>;
