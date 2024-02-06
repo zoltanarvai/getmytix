@@ -57,16 +57,16 @@ export async function generateTickets(
         ticketTypeId: orderedTicket.itemId,
         ticketType: ticketType.type,
         unitPrice: ticketType.price,
-        ticketCallbackUrl: `${HTTP_SCHEME}://${event.subdomain}.${
+        ticketCallbackUrl: `${HTTP_SCHEME}://api.${
           process.env.HOST
-        }/api/tickets/${ticket._id.toHexString()}`,
+        }/tickets/${ticket._id.toHexString()}`,
       };
     })
   );
 
   await services.generateTickets({
     orderId: order.id,
-    orderCallbackUrl: `${HTTP_SCHEME}://${event.subdomain}.${process.env.HOST}/api/orders/${order.id}`,
+    orderCallbackUrl: `${HTTP_SCHEME}://api.${process.env.HOST}/orders/${order.id}`,
     tickets,
     eventDetails: {
       id: event.id,

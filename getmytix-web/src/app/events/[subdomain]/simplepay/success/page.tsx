@@ -22,17 +22,17 @@ export default async function PaymentSuccessful({
     return notFound();
   }
 
-  // if (!order) {
-  //   throw new Error("Order not found");
-  // }
+  if (!order) {
+    throw new Error("Order not found");
+  }
 
-  // if (!orders.isPaid(order)) {
-  //   await orders.fulfill(
-  //     paymentResult.orderId,
-  //     paymentResult.transactionId,
-  //     "simplepay"
-  //   );
-  // }
+  if (!orders.isPaid(order)) {
+    await orders.fulfill(
+      paymentResult.orderId,
+      paymentResult.transactionId,
+      "simplepay"
+    );
+  }
 
   return (
     <main className="flex min-h-screen flex-col max-w-screen-lg m-auto gap-2">

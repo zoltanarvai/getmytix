@@ -70,4 +70,4 @@ class Handler:
         )
 
         # Call Webhooks to complete the order and update the tickets
-        self._ticket_manager.update_order_and_tickest(order, ticket_infos)
+        self._ticket_manager.update_order_and_tickets(order, ticket_infos)

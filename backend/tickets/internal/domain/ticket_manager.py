@@ -74,17 +74,15 @@ class TicketManager:
 
         return url
 
-    def send_tickets(self, customer_details: CustomerDetails, event_details: EventDetails, ticket_info: list[tuple[str, Ticket]]):
-        self._ticket_mailer.send_ticket(
-            recipient_name=customer_details.name,
-            recipient_email=customer_details.email,
-            event_name=event_details.name,
+    def send_tickets(self, order: Order, ticket_info: list[tuple[str, Ticket]]):
+        self._ticket_mailer.send_tickets(
+            order=order,
             ticket_infos=ticket_info
         )
 
-        logging.info(f"Tickets sent to {customer_details.name} <{customer_details.email}>")
+        logging.info(f"Tickets sent to {order.customer_details.name} <{order.customer_details.email}>")
 
-    def update_order_and_tickest(self, order: Order, ticket_info: list[tuple[str, Ticket]]):
+    def update_order_and_tickets(self, order: Order, ticket_info: list[tuple[str, Ticket]]):
         async def update_all():
             tasks = [
                 self._webhooks.update_ticket(

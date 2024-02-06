@@ -2,16 +2,15 @@ import logging
 
 from mailersend import emails
 
-from .order import Ticket
+from .order import Ticket, Order
 
 
 class TicketMailer:
     def __init__(self, api_key: str):
         self._api_key = api_key
 
-    def send_ticket(self, recipient_name: str, recipient_email: str, event_name: str,
-                    ticket_infos: list[tuple[str, Ticket]]):
-        logging.info(f"Sending tickets to {recipient_name} <{recipient_email}>")
+    def send_tickets(self, order: Order, ticket_infos: list[tuple[str, Ticket]]):
+        logging.info(f"Sending tickets to {order.customer_details.name} <{order.customer_details.email}>")
 
         mail = emails.NewEmail(self._api_key)
 
@@ -22,8 +21,29 @@ class TicketMailer:
 
         recipients = [
             {
-                "name": recipient_name,
-                "email": recipient_email,
+                "name": order.customer_details.name,
+                "email": order.customer_details.email,
+            }
+        ]
+
+        personalization = [
+            {
+                "email": "recipient@email.com",
+                "data": {
+                    "items": [
+                        {
+                            "price": f"{ticket.unit_price} Ft",
+                            "product": ticket.ticket_type,
+                            "download_link": ticket_url
+                        } for ticket_url, ticket in ticket_infos
+                    ],
+                    "order": {
+                        "order_number": order.order_id,
+                    },
+                    "customer": {
+                        "name": order.customer_details.name,
+                    }
+                }
             }
         ]
 
@@ -31,34 +51,8 @@ class TicketMailer:
 
         mail.set_mail_from(sender, body)
         mail.set_mail_to(recipients, body)
-        mail.set_subject(f"{event_name} jegyek", body)
-
-        mail.set_html_content(self._build_html_content(ticket_infos), body)
-        mail.set_plaintext_content(self._build_plaintext_content(ticket_infos), body)
+        mail.set_subject(f"{order.event_details.name} jegyek", body)
+        mail.set_template("o65qngkxvzj4wr12", body)
+        mail.set_advanced_personalization(personalization, body)
 
         mail.send(body)
-
-    @staticmethod
-    def _build_html_content(ticket_infos: list[tuple[str, Ticket]]) -> str:
-        links_html = "".join([f'<li><a href="{url}">{url}</a></li>' for url, ticket in ticket_infos])
-        html_content = f"""
-        <html>
-            <body>
-                <p>A jegyek az alabbi linken elerhetoek: </p>
-                <ul>
-                    {links_html}
-                </ul>
-            </body>
-        </html>
-        """
-        return html_content
-
-    @staticmethod
-    def _build_plaintext_content(ticket_infos: list[tuple[str, Ticket]]) -> str:
-        links_text = "\n".join([url for url, ticket in ticket_infos])
-        plaintext_content = f"""
-        A jegyek az alabbi linken elerhetoek:
-        {links_text}
-        """
-
-        return plaintext_content
