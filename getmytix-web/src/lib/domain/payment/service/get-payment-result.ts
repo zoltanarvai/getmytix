@@ -1,10 +1,19 @@
 import { base64Decode, generateSignature } from "./utils";
 
-export type PaymentCompleteResponse = {
-  r: number;
-  e: string; // SUCCESS label
+type PaymentCompleteResponse = {
+  r: number; // response code
+  t: number; // Transaction ID
+  e: "SUCCESS" | "FAIL" | "CANCEL" | "TIMEOUT"; // event
   m: string; // Merchant ID
   o: string; // Order ID
+};
+
+export type PaymentResult = {
+  orderId: string;
+  status: "SUCCESS" | "FAIL" | "CANCEL" | "TIMEOUT";
+  transactionId: number;
+  merchantId: string;
+  responseCode: number;
 };
 
 export type Status = "SUCCESS";
@@ -20,7 +29,7 @@ function validatedSignature(message: string, signature: string) {
 export function getValidatedResponse(
   responseBase64: string,
   signature: string
-): { orderId: string; status: Status } {
+): PaymentResult {
   const payload = base64Decode(responseBase64);
   const response = JSON.parse(payload) as PaymentCompleteResponse;
 
@@ -28,6 +37,9 @@ export function getValidatedResponse(
 
   return {
     orderId: response.o,
-    status: response.e as Status,
+    status: response.e,
+    transactionId: response.t,
+    merchantId: response.m,
+    responseCode: response.r,
   };
 }

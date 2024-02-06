@@ -69,7 +69,16 @@ export async function createOrder(
     orderId: orderId,
     customerEmail: customer.email,
     amount: totalAmount.toString(),
-    redirectUrl: `${SCHEME}://${validRequest.subdomain}.${HOST}/payment-complete`,
+    redirectBaseUrl: `${SCHEME}://${validRequest.subdomain}.${HOST}`,
+    invoiceDetails: {
+      name: validRequest.customerDetails.name,
+      company: "",
+      country: validRequest.customerDetails.country,
+      state: validRequest.customerDetails.state,
+      city: validRequest.customerDetails.city,
+      zip: validRequest.customerDetails.zip,
+      address: `${validRequest.customerDetails.street} ${validRequest.customerDetails.streetNumber}`,
+    },
   });
 
   return {

@@ -37,12 +37,24 @@ export default async function middleware(req: NextRequest) {
   const path = `${url.pathname}${
     searchParams.length > 0 ? `?${searchParams}` : ""
   }`;
-
-  // rewrites for event pages
   const [subDomain, domain, rootDomain] = hostname.split(".");
+
+  // rewrites for api calls
   if (
     `${domain}.${rootDomain}` === process.env.NEXT_PUBLIC_ROOT_DOMAIN &&
-    subDomain !== "www"
+    subDomain === "api"
+  ) {
+    console.debug("rewriting to api", "/api", req.url);
+    return NextResponse.rewrite(
+      new URL(`/api${path === "/" ? "" : path}`, req.url)
+    );
+  }
+
+  // rewrites for event pages
+  if (
+    `${domain}.${rootDomain}` === process.env.NEXT_PUBLIC_ROOT_DOMAIN &&
+    subDomain !== "www" &&
+    subDomain !== "api"
   ) {
     console.debug("rewriting to event page", "/events/${subDomain}", req.url);
     return NextResponse.rewrite(

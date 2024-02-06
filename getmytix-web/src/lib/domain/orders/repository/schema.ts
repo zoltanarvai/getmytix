@@ -15,6 +15,7 @@ export type OrderStatus = z.infer<typeof orderStatusSchema>;
 export const historyItemSchema = z.object({
   timestamp: z.string(),
   event: orderStatusSchema,
+  metadata: z.record(z.any()).optional(),
 });
 
 export type HistoryItem = z.infer<typeof historyItemSchema>;

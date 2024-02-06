@@ -1,5 +1,7 @@
 import * as R from "remeda";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { events, shoppingCart, session } from "@/lib/domain";
 import { ShoppingCart, SubmitOrder } from "@/components/organisms";
 import { PageSection, PageTitles } from "@/components/molecules";
@@ -20,10 +22,6 @@ export default async function Checkout({
   if (!sessionId || !event) {
     return notFound();
   }
-
-  console.log(">>>>> event", event);
-  console.log(">>>>> sessionId", sessionId);
-  console.log(">>>>> cartId", cartId);
 
   const shoppingCartItems = await shoppingCart.getShoppingCartItems(cartId);
 
@@ -54,6 +52,22 @@ export default async function Checkout({
       <PageSection title="Vásárló adatai" classNames="mt-8">
         <SubmitOrder subdomain={event.subdomain} shoppingCartId={cartId} />
       </PageSection>
+
+      <div className="self-end">
+        <Link
+          href="https://simplepartner.hu/PaymentService/Fizetesi_tajekoztato.pdf"
+          target="_blank"
+        >
+          <Image
+            src="/simplepay.png"
+            title="SimplePay - Online bankkártyás fi
+              zetés"
+            alt=" SimplePay vásárlói tájékoztató"
+            width={197}
+            height={197}
+          />
+        </Link>
+      </div>
     </main>
   );
 }

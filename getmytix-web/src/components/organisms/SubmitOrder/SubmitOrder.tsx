@@ -27,8 +27,6 @@ export function SubmitOrder({ subdomain, shoppingCartId }: SubmitOrderProps) {
       },
     });
 
-    console.log(">>>>> paymentResponse", paymentResponse);
-
     if (paymentResponse.mode === "confirmation") {
       // Navigate to free checkout complete page
       window.location.href = paymentResponse.redirectUrl;

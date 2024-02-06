@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Montserrat } from "next/font/google";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,11 +17,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TwoColumnLayout } from "./TwoColumnLayout";
 import { Column } from "./Column";
 import { CustomerData, formSchema } from "./customer-details-form-schema";
-
-const fontMontserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-});
+import Link from "next/link";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 type CustomerDetailsFormProps = {
   onCustomerDetailsSubmitted: (data: CustomerData) => void;
@@ -31,19 +28,25 @@ type CustomerDetailsFormProps = {
 export function CustomerDetailsForm({
   onCustomerDetailsSubmitted,
 }: CustomerDetailsFormProps) {
+  const [tosAccepted, setTosAccepted] = React.useState(false);
+
   const form = useForm<CustomerData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      street: "",
-      streetNumber: "",
-      city: "",
-      zip: "",
-      state: "",
-      country: "",
-      phone: "",
+      name: "Zoltan Arvai",
+      street: "Magyar utca",
+      streetNumber: "38/a",
+      city: "Budapest",
+      zip: "1053",
+      state: "Pest",
+      country: "Magyarorszag",
+      phone: "435345435543",
     },
   });
+
+  const onCheckChanged = (checked: CheckedState) => {
+    setTosAccepted(checked === true);
+  };
 
   const onSubmit = async (data: CustomerData) => {
     onCustomerDetailsSubmitted(data);
@@ -200,9 +203,29 @@ export function CustomerDetailsForm({
                 />
               </Column>
             </TwoColumnLayout>
+
+            <div className="mt-6 w-4/5 max-md:w-full m-auto">
+              <Checkbox id="terms" onCheckedChange={onCheckChanged} />
+              <label htmlFor="terms" className="text-sm font-medium ml-2">
+                Tudomásul veszem, hogy az MX Technologies Kft. ( 2084
+                Pilisvörösvár, Kápolna utca 38/a) adatkezelő által a getmytix.io
+                felhasználói adatbázisában tárolt alábbi személyes adataim
+                átadásra kerülnek az OTP Mobil Kft., mint adatfeldolgozó
+                részére. Az adatkezelő által továbbított adatok köre az alábbi:
+                Név, számlázási cím, telefonszám, e-mail cím. Az adatfeldolgozó
+                által végzett adatfeldolgozási tevékenység jellege és célja a
+                SimplePay Adatkezelési tájékoztatóban, az alábbi linken
+                tekinthető meg:{" "}
+                <Link href="http://simplepay.hu/vasarlo-aff" target="_blank">
+                  http://simplepay.hu/vasarlo-aff
+                </Link>
+              </label>
+            </div>
+
             <Button
               type="submit"
               className="text-xl font-bold rounded-full px-6 py-6 self-center mt-8 w-44"
+              disabled={!tosAccepted}
             >
               Fizetés
             </Button>

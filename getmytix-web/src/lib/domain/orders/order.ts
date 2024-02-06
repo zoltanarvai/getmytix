@@ -12,6 +12,10 @@ export function isPaid(order: Order): boolean {
   return order.history.some((event) => event.event === "paid");
 }
 
+export function isCancelled(order: Order): boolean {
+  return order.history.some((event) => event.event === "cancelled");
+}
+
 export async function getOrder(orderId: string): Promise<Order> {
   const order = await repository.getOrder(orderId);
   if (!order) {
@@ -61,12 +65,46 @@ export async function calculateTotalOrderValue(
   return total;
 }
 
-export async function fulfill(orderId: string): Promise<void> {
+export async function cancel(
+  orderId: string,
+  transactionId: number,
+  paymentProvider: "simplepay"
+): Promise<void> {
+  console.info("cancelling order", orderId);
+
+  const historyItem: repository.HistoryItem = {
+    timestamp: new Date().toISOString(),
+    event: "cancelled",
+    metadata: {
+      transactionId,
+      paymentProvider,
+    },
+  };
+
+  await repository.addHistoryItem(orderId, historyItem);
+
+  const order = await getOrder(orderId);
+  if (!order) {
+    throw new Error(`Order ${orderId} not found`);
+  }
+
+  await shoppingCarts.deleteCart(order.shoppingCartId);
+}
+
+export async function fulfill(
+  orderId: string,
+  transactionId: number,
+  paymentProvider: "simplepay"
+): Promise<void> {
   console.info("fullfilling order", orderId);
 
   const historyItem: repository.HistoryItem = {
     timestamp: new Date().toISOString(),
     event: "paid",
+    metadata: {
+      transactionId,
+      paymentProvider,
+    },
   };
 
   await repository.addHistoryItem(orderId, historyItem);
@@ -88,12 +126,14 @@ export async function fulfill(orderId: string): Promise<void> {
 
 export async function updateOrderStatus(
   orderId: string,
-  status: repository.OrderStatus
+  status: repository.OrderStatus,
+  metadata?: Record<string, any>
 ): Promise<void> {
   console.info("updating order status", orderId, status);
 
   await repository.addHistoryItem(orderId, {
     timestamp: new Date().toUTCString(),
     event: status,
+    metadata,
   });
 }

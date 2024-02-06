@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   calculateTimeout,
   generateRandomSalt,
@@ -7,16 +8,18 @@ import {
 const merchantKey: string = process.env.MERCHANT_KEY!;
 const merchant: string = process.env.MERCHANT_ID!;
 
-export type PaymentStartResponse = {
-  salt: string;
-  merchant: string;
-  orderRef: string;
-  currency: string;
-  transactionId: number;
-  timeout: string;
-  total: number;
-  paymentUrl: string;
-};
+const paymentResponseSchema = z.object({
+  salt: z.string(),
+  merchant: z.string(),
+  orderRef: z.string(),
+  currency: z.string(),
+  transactionId: z.number(),
+  timeout: z.string(),
+  total: z.number(),
+  paymentUrl: z.string(),
+});
+
+export type PaymentStartResponse = z.infer<typeof paymentResponseSchema>;
 
 if (!merchantKey) {
   throw new Error("Merchant key not found");
@@ -44,8 +47,17 @@ export async function createPayment(
   orderId: string,
   customerEmail: string,
   amount: string,
-  redirectUrl: string
-) {
+  redirectUrl: string,
+  invoiceDetails: {
+    name: string;
+    company: string;
+    country: string;
+    state: string;
+    city: string;
+    zip: string;
+    address: string;
+  }
+): Promise<PaymentStartResponse> {
   const message = {
     salt: generateRandomSalt(16),
     merchant: merchant,
@@ -58,7 +70,14 @@ export async function createPayment(
     methods: ["CARD"],
     total: amount,
     timeout: calculateTimeout(5),
-    url: redirectUrl,
+    urls: {
+      success: `${redirectUrl}/simplepay/success`,
+      fail: `${redirectUrl}/simplepay/fail`,
+      cancel: `${redirectUrl}/simplepay/cancel`,
+      timeout: `${redirectUrl}/simplepay/timeout`,
+    },
+    invoice: invoiceDetails,
+    threeDSReqAuthMethod: "01",
   };
 
   const response = await sendRequest(
@@ -67,8 +86,10 @@ export async function createPayment(
   );
 
   if (response.ok) {
-    const paymentResponse = (await response.json()) as PaymentStartResponse;
-    return paymentResponse;
+    const responseBody = await response.json();
+    console.info("Payment response", responseBody);
+
+    return paymentResponseSchema.parse(responseBody);
   } else {
     throw new Error("Failed to create payment - " + (await response.text()));
   }
