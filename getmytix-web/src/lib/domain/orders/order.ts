@@ -94,7 +94,7 @@ export async function cancel(
 export async function fulfill(
   orderId: string,
   transactionId: number,
-  paymentProvider: "simplepay"
+  paymentProvider: "simplepay" | "none"
 ): Promise<void> {
   console.info("fullfilling order", orderId);
 

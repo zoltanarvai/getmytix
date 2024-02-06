@@ -2,17 +2,17 @@ import { notFound } from "next/navigation";
 import { orders, events } from "@/lib/domain";
 import { PageTitles } from "@/components/molecules";
 
-type CheckoutCompleteProps = {
+type FreeCheckoutCompleteProps = {
   params: { subdomain: string };
   searchParams: {
     orderId: string;
   };
 };
 
-export default async function CheckoutComplete({
+export default async function FreeCheckoutComplete({
   params: { subdomain },
   searchParams: { orderId },
-}: CheckoutCompleteProps) {
+}: FreeCheckoutCompleteProps) {
   const event = await events.getEventBySubdomain(subdomain);
   const order = await orders.getOrder(orderId);
 
@@ -26,7 +26,7 @@ export default async function CheckoutComplete({
 
   if (!orders.isPaid(order)) {
     // equivalent to processing
-    await orders.fulfill(orderId);
+    await orders.fulfill(orderId, 0, "none");
   }
 
   return (
