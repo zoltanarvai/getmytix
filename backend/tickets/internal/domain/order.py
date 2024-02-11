@@ -8,6 +8,7 @@ class Ticket(BaseModel):
     ticket_type: str = Field(alias="ticketType")
     ticket_id: str = Field(alias="ticketId")
     unit_price: int = Field(alias="unitPrice")
+    ticket_code: str = Field(alias="ticketCode")
     ticket_callback_url: str = Field(alias="ticketCallbackUrl")
 
 

@@ -29,6 +29,8 @@ export async function createOrder(
   redirectUrl: string;
   mode: "payment" | "confirmation";
 }> {
+  console.info("Creating order", createOrderRequest);
+
   const validRequest = createOrderSchema.parse(createOrderRequest);
 
   const currentSessionId = session.getCurrentSessionId();
@@ -58,11 +60,15 @@ export async function createOrder(
   const totalAmount = await orders.calculateTotalOrderValue(orderId);
 
   if (totalAmount === 0) {
+    console.info("Order is free, skipping payment");
+
     return {
       redirectUrl: `/free-checkout-complete?orderId=${orderId}`,
       mode: "confirmation",
     };
   }
+
+  console.info("Order is contains non-free tickets, creating payment");
 
   // Kick off Payment
   const paymentResponse = await payment.createPayment({

@@ -5,12 +5,16 @@ import { cookies } from "next/headers";
 export type Session = Domain<repository.SessionRecord>;
 
 export async function createSession(customerId: string): Promise<Session> {
+  console.info("Creating session", customerId);
+
   const { _id, ...rest } = await repository.createSession(customerId);
 
   const sessionId = _id.toHexString();
 
   const cookieStore = cookies();
   cookieStore.set("sessionId", sessionId);
+
+  console.info("Session created", sessionId);
 
   return {
     id: sessionId,

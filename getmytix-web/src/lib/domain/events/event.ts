@@ -1,13 +1,16 @@
 import { Domain, Maybe } from "@/lib/types";
-import * as repository from "./repository";
 import { tickets } from "@/lib/domain";
+import * as repository from "./repository";
 
 export type Event = Domain<repository.EventRecord>;
 
 export async function getEventById(eventId: string): Promise<Maybe<Event>> {
+  console.info("Getting event by id", eventId);
+
   const event = await repository.getEventById(eventId);
 
   if (!event) {
+    console.info("No such event found", eventId);
     return null;
   }
 
@@ -22,9 +25,12 @@ export async function getEventById(eventId: string): Promise<Maybe<Event>> {
 export async function getEventBySubdomain(
   subdomain: string
 ): Promise<Maybe<Event>> {
+  console.info("Getting event by subdomain", subdomain);
+
   const event = await repository.getEventBySubdomain(subdomain);
 
   if (!event) {
+    console.info("No such event found", subdomain);
     return null;
   }
 
@@ -39,6 +45,8 @@ export async function getEventBySubdomain(
 export async function getAvailableQuantityPerTicketType(
   eventId: string
 ): Promise<Record<string, number>> {
+  console.info("Getting available quantity per ticket type", eventId);
+
   const event = await repository.getEventById(eventId);
   if (!event) {
     throw new Error(`Event not found for id: ${eventId}`);

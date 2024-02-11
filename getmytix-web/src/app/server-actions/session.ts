@@ -1,4 +1,5 @@
 "use server";
+
 import { z } from "zod";
 import { session, customers } from "@/lib/domain";
 
@@ -11,6 +12,8 @@ type CreateSessionProps = z.infer<typeof createSessionPropsSchema>;
 export async function createSession(
   createSessionProps: CreateSessionProps
 ): Promise<string> {
+  console.info("Creating session", createSessionProps);
+
   const request = createSessionPropsSchema.parse(createSessionProps);
 
   const { email } = request;
@@ -19,7 +22,8 @@ export async function createSession(
   let customerId = customer?.id;
 
   if (!customerId) {
-    customerId = await customers.createCustomer(email);
+    const customer = await customers.createCustomer(email);
+    customerId = customer.id;
   }
 
   const { id } = await session.createSession(customerId);

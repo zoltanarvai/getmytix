@@ -23,6 +23,8 @@ export async function createPayment({
   redirectBaseUrl,
   invoiceDetails,
 }: CreatePaymentProps): Promise<service.PaymentStartResponse> {
+  console.info("Creating payment link", orderId, customerEmail, amount);
+
   const paymentResponse = await service.createPayment(
     orderId,
     customerEmail,
@@ -30,6 +32,8 @@ export async function createPayment({
     redirectBaseUrl,
     invoiceDetails
   );
+
+  console.info("Payment link created", paymentResponse);
 
   return paymentResponse;
 }

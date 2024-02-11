@@ -1,8 +1,8 @@
 resource "aws_s3_bucket" "tickets" {
-  bucket = "getmytix-tickets-${var.environment}"
+  bucket = "tickets-${var.environment}.getmytix.io"
 
   tags = {
-    Name = "getmytix-tickets-${var.environment}"
+    Name = "tickets-${var.environment}.getmytix.io"
   }
 
   lifecycle {
@@ -34,6 +34,25 @@ resource "aws_s3_bucket_acl" "tickets" {
 
   bucket = aws_s3_bucket.tickets.id
   acl    = "public-read"
+}
+
+resource "aws_s3_bucket_policy" "tickets" {
+  bucket = aws_s3_bucket.tickets.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = ["s3:GetObject"]
+        Effect    = "Allow"
+        Resource  = [
+          "arn:aws:s3:::${aws_s3_bucket.tickets.id}",
+          "arn:aws:s3:::${aws_s3_bucket.tickets.id}/*"
+        ]
+        Principal = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_s3_bucket_cors_configuration" "tickets" {

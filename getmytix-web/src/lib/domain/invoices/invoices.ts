@@ -7,6 +7,8 @@ export async function generateInvoice(
   order: orders.Order,
   event: events.Event
 ): Promise<void> {
+  console.info("Generating invoice for order", order.id);
+
   const getTicketType = (ticketId: string) => {
     const ticketType = event.ticketTypes.find(
       (ticketType) => ticketType.id === ticketId
@@ -40,4 +42,6 @@ export async function generateInvoice(
     billingDetails: order.customerDetails,
     items: invoiceItems,
   });
+
+  console.info("Generated invoice items", invoiceItems);
 }

@@ -19,6 +19,8 @@ export async function addItemToShoppingCart(
 ): Promise<{
   result: "added" | "not-enough-tickets";
 }> {
+  console.info("Adding item to shopping cart", updateShoppingCartProps);
+
   const validatesShoppingCart = updateShoppingCartPropsSchema.parse(
     updateShoppingCartProps
   );
@@ -46,6 +48,8 @@ type RemoveShoppingCartItemProps = z.infer<typeof removeShoppingCartItemSchema>;
 export async function removeItemFromShoppingCart(
   removeShoppingCartItemProps: RemoveShoppingCartItemProps
 ): Promise<void> {
+  console.info("Removing item from shopping cart", removeShoppingCartItemProps);
+
   const validatedRequest = removeShoppingCartItemSchema.parse(
     removeShoppingCartItemProps
   );

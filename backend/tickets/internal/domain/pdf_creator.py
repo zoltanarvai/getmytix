@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import letter
 
 class PDFCreator:
     @staticmethod
-    def create_pdf(event_name: str, start_date: str, location: str, ticket_type: str, qr_image: PilImage) -> io.BytesIO:
+    def create_pdf(event_name: str, start_date: str, location: str, ticket_type: str, ticket_code: str, qr_image: PilImage) -> io.BytesIO:
         logging.info("Creating pdf ticket...")
 
         pdf_stream = io.BytesIO()
@@ -32,6 +32,9 @@ class PDFCreator:
         # Put event details on the left
         c.setFont("Helvetica", 14)
         c.drawString(50, 640, f"Jegy tipus: {ticket_type}")
+
+        c.setFont("Helvetica", 14)
+        c.drawString(50, 660, f"Jegy kod: {ticket_code}")
 
         # Save PDF
         c.save()

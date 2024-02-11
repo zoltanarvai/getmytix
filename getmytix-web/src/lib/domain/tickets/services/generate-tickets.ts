@@ -14,6 +14,7 @@ const ticketGenerationRequestSchema = z.object({
       ticketType: z.string(),
       ticketId: z.string(),
       unitPrice: z.number(),
+      ticketCode: z.string(),
       ticketCallbackUrl: z.string(),
     })
   ),

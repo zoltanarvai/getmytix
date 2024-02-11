@@ -9,6 +9,8 @@ export type Ticket = Domain<repository.TicketRecord>;
 const HTTP_SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
 
 export async function getTicketsForEvent(eventId: string): Promise<Ticket[]> {
+  console.info("Getting tickets for event", eventId);
+
   const tickets = await repository.getTicketsForEvent(eventId);
 
   return tickets.map((ticket) => {
@@ -25,6 +27,8 @@ export async function generateTickets(
   order: Order,
   event: events.Event
 ): Promise<void> {
+  console.info("Generating tickets for order", order.id);
+
   const tickets = await Promise.all(
     order.items.map(async (orderedTicket) => {
       const ticketType = event.ticketTypes.find(
@@ -37,26 +41,30 @@ export async function generateTickets(
         );
       }
 
-      const ticket = await repository.createTicket({
-        orderId: order.id,
-        eventId: event.id,
-        ticketTypeId: orderedTicket.itemId,
-        status: "created",
-        details: {
-          event,
-          ticketType,
-          customer: {
-            name: order.customerDetails.name,
-            email: order.customerDetails.email,
+      const ticket = await repository.createTicket(
+        {
+          orderId: order.id,
+          eventId: event.id,
+          ticketTypeId: orderedTicket.itemId,
+          status: "created",
+          details: {
+            event,
+            ticketType,
+            customer: {
+              name: order.customerDetails.name,
+              email: order.customerDetails.email,
+            },
           },
         },
-      });
+        event.createdAt
+      );
 
       return {
         ticketId: ticket._id.toHexString(),
         ticketTypeId: orderedTicket.itemId,
         ticketType: ticketType.type,
         unitPrice: ticketType.price,
+        ticketCode: ticket.ticketCode!,
         ticketCallbackUrl: `${HTTP_SCHEME}://api.${
           process.env.HOST
         }/tickets/${ticket._id.toHexString()}`,
@@ -84,6 +92,8 @@ export async function generateTickets(
       email: order.customerDetails.email,
     },
   });
+
+  console.info("Generated tickets", tickets);
 }
 
 export async function setTicketStatus(
@@ -91,10 +101,16 @@ export async function setTicketStatus(
   status: repository.TicketStatus,
   ticketUrl?: string
 ): Promise<void> {
+  console.info(
+    `Setting ticket status ${status} for ticket ${ticketId} with url ${ticketUrl}`
+  );
+
   const ticket = await repository.getTicketById(ticketId);
   if (!ticket) {
     throw new Error(`Ticket ${ticketId} not found`);
   }
 
   await repository.updateTicket(ticketId, status, ticketUrl);
+
+  console.info(`Ticket status set to ${status}`);
 }

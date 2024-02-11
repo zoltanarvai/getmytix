@@ -9,9 +9,13 @@ export async function initialize(
   sessionId: string,
   subdomain: string
 ): Promise<ShoppingCart> {
+  console.info("Initializing shopping cart", sessionId, subdomain);
+
   let shoppingCart = await repository.getShoppingCart(sessionId, subdomain);
 
   if (!shoppingCart) {
+    console.info("Shopping cart not found, creating new one");
+
     const event = await events.getEventBySubdomain(subdomain);
     if (!event) {
       throw new Error("Event not found");
@@ -26,6 +30,8 @@ export async function initialize(
 
   const { _id, ...rest } = shoppingCart;
 
+  console.info("Shopping cart initialized", _id.toHexString());
+
   return {
     id: _id.toHexString(),
     ...rest,
@@ -35,6 +41,8 @@ export async function initialize(
 export async function getShoppingCart(
   shoppingCartId: string
 ): Promise<ShoppingCart> {
+  console.info("Getting shopping cart", shoppingCartId);
+
   const shoppingCart = await repository.getShoppingCartById(shoppingCartId);
 
   if (!shoppingCart) {
@@ -56,6 +64,13 @@ export async function addItems(
 ): Promise<{
   result: "added" | "not-enough-tickets";
 }> {
+  console.info(
+    "Adding items to shopping cart",
+    shoppingCartId,
+    itemId,
+    quantity
+  );
+
   const shoppingCart = await repository.getShoppingCartById(shoppingCartId);
   if (!shoppingCart) {
     throw new Error("Shopping cart not found");
@@ -96,6 +111,10 @@ export async function addItems(
 
   await repository.addItemsToCart(shoppingCartId, items);
 
+  console.info(
+    `Items added to shopping cart ${shoppingCartId} for item ${itemId} with quantity ${quantity}`
+  );
+
   return {
     result: "added",
   };
@@ -105,20 +124,34 @@ export async function removeItem(
   shoppingCartId: string,
   itemId: string
 ): Promise<void> {
+  console.info("Removing item from shopping cart", shoppingCartId, itemId);
+
   await repository.removeItemFromCart(shoppingCartId, itemId);
+
+  console.info(`Item removed from shopping cart ${shoppingCartId}`);
 }
 
 export async function clear(shoppingCartId: string): Promise<void> {
+  console.info("Clearing shopping cart", shoppingCartId);
+
   await repository.clearShoppingCart(shoppingCartId);
+
+  console.info("Shopping cart cleared", shoppingCartId);
 }
 
 export async function deleteCart(shoppingCartId: string): Promise<void> {
+  console.info("Deleting shopping cart", shoppingCartId);
+
   await repository.deleteShoppingCart(shoppingCartId);
+
+  console.info("Shopping cart deleted", shoppingCartId);
 }
 
 export async function getShoppingCartItems(
   shoppingCartId: string
 ): Promise<ShoppingCartItem[]> {
+  console.info("Getting shopping cart items", shoppingCartId);
+
   const shoppingCart = await repository.getShoppingCartById(shoppingCartId);
 
   if (!shoppingCart) {
@@ -131,6 +164,8 @@ export async function getShoppingCartItems(
 export async function calculateBasketValue(
   shoppingCartId: string
 ): Promise<number> {
+  console.info("Calculating basket value", shoppingCartId);
+
   const shoppingCart = await repository.getShoppingCartById(shoppingCartId);
   if (!shoppingCart) {
     throw new Error("Shopping cart not found");

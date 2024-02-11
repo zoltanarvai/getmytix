@@ -7,7 +7,7 @@ from botocore.client import BaseClient
 
 from .webhooks import Webhooks
 from .mailer import TicketMailer
-from .order import Ticket, EventDetails, CustomerDetails, Order
+from .order import Ticket, EventDetails, Order
 from .qr_code import QRCode
 from .pdf_creator import PDFCreator
 
@@ -38,7 +38,8 @@ class TicketManager:
             start_date=event_details.start_date.isoformat(),
             location=event_details.address.to_location(),
             ticket_type=ticket.ticket_type,
-            qr_image=qr_code_image
+            qr_image=qr_code_image,
+            ticket_code=ticket.ticket_code
         )
 
         logging.info("PDF Generated")
