@@ -14,7 +14,7 @@ class TicketMailer:
 
         mail = emails.NewEmail(self._api_key)
 
-        sender = {
+        mail_from = {
             "name": "GetMyTix",
             "email": "no-reply@getmytix.io",
         }
@@ -28,11 +28,10 @@ class TicketMailer:
 
         personalization = [
             {
-                "email": "recipient@email.com",
+                "email": order.customer_details.email,
                 "data": {
-                    "order": {
-                        "order_number": order.order_unique_id,
-                    },
+                    "order_number": order.order_id,
+                    "download_link": f"http://download.localhost:3000/{order.order_unique_id}",
                     "customer": {
                         "name": order.customer_details.name,
                     }
@@ -42,7 +41,7 @@ class TicketMailer:
 
         body = {}
 
-        mail.set_mail_from(sender, body)
+        mail.set_mail_from(mail_from, body)
         mail.set_mail_to(recipients, body)
         mail.set_subject(f"{order.event_details.name} jegyek", body)
         mail.set_template("o65qngkxvzj4wr12", body)
