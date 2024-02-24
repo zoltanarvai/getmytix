@@ -2,7 +2,7 @@ import logging
 import boto3
 
 from tickets.internal.aws.sqs import SqsEvent, SqsRecord
-from tickets.internal.domain import Order, QRCode, TicketMailer, TicketManager, Webhooks
+from tickets.internal.domain import Order, QRCode, TicketMailer, TicketManager, Webhooks, PDFCreator
 
 from tickets.internal.config import mandatory_env
 
@@ -26,6 +26,9 @@ class Handler:
                 bucket_name=mandatory_env("TICKETS_BUCKET_NAME"),
                 webhooks=Webhooks(
                     secret=mandatory_env("WEBHOOKS_SECRET")
+                ),
+                pdf_creator=PDFCreator(
+                    base_dir=mandatory_env("BASE_DIR"),
                 )
             )
         )

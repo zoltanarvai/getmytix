@@ -9,7 +9,7 @@ export async function addHistoryItem(
     try {
         const entry = historyItemSchema.parse(historyItem);
         const db = await getDB();
-        const result = await db.collection("orders").updateOne(
+        await db.collection("orders").updateOne(
             {_id: new ObjectId(orderId)},
             {
                 $push: {history: entry},

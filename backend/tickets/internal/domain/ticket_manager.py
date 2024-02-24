@@ -18,13 +18,15 @@ class TicketManager:
                  ticket_mailer: TicketMailer,
                  s3: BaseClient,
                  bucket_name: str,
-                 webhooks: Webhooks
+                 webhooks: Webhooks,
+                 pdf_creator: PDFCreator,
                  ):
         self._qr_code = qr_code
         self._ticket_mailer = ticket_mailer
         self._s3 = s3
         self._bucket_name = bucket_name
         self._webhooks = webhooks
+        self._pdf_creator = pdf_creator
 
     def generate_ticket(self, event_details: EventDetails, ticket: Ticket) -> io.BytesIO:
         # Generate QR Code
@@ -33,7 +35,7 @@ class TicketManager:
         logging.info("QR Code Ready")
 
         # Generate PDF
-        pdf = PDFCreator.create_pdf(
+        pdf = self._pdf_creator.create_pdf(
             event_name=event_details.name,
             start_date=event_details.start_date.isoformat(),
             location=event_details.address.to_location(),

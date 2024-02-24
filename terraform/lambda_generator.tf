@@ -28,18 +28,18 @@ data "aws_iam_policy_document" "lambda_generator_logs" {
 }
 
 data "aws_iam_policy_document" "lambda_generator_s3" {
-    statement {
-        effect  = "Allow"
-        actions = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket"
-        ]
-        resources = [
-          aws_s3_bucket.tickets.arn,
-          "${aws_s3_bucket.tickets.arn}/*"
-        ]
-    }
+  statement {
+    effect  = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      aws_s3_bucket.tickets.arn,
+      "${aws_s3_bucket.tickets.arn}/*"
+    ]
+  }
 
 }
 
@@ -117,6 +117,7 @@ resource "aws_lambda_function" "lambda_generator" {
       TICKETS_BUCKET_NAME        = aws_s3_bucket.tickets.bucket
       MAILER_SEND_API_KEY        = var.mailer_send_api_key
       WEBHOOKS_SECRET            = var.getmytix_webhook_secret
+      BASE_DIR                   = "tickets/app"
     }
   }
 
