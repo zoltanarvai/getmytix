@@ -56,18 +56,14 @@ class Handler:
             # Upload PDF to S3
             ticket_url = self._ticket_manager.upload_pdf_to_s3(
                 event_id=order.event_details.id,
-                ticket_id=ticket.ticket_id,
+                ticket_id=ticket.ticket_unique_id,
                 pdf=pdf_ticket
             )
 
             ticket_infos.append((ticket_url, ticket))
 
         # Send email with link to PDF
-        self._ticket_manager.send_tickets(
-            customer_details=order.customer_details,
-            event_details=order.event_details,
-            ticket_info=ticket_infos
-        )
+        self._ticket_manager.send_tickets(order)
 
         # Call Webhooks to complete the order and update the tickets
         self._ticket_manager.update_order_and_tickets(order, ticket_infos)

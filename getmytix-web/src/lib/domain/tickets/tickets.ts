@@ -1,3 +1,4 @@
+import * as uuid from "uuid";
 import {Domain} from "@/lib/types";
 import type {Order} from "../orders";
 import * as events from "../events";
@@ -46,6 +47,7 @@ export async function generateTickets(
                     orderId: order.id,
                     eventId: event.id,
                     ticketTypeId: orderedTicket.itemId,
+                    ticketUniqueId: uuid.v4(),
                     status: "created",
                     details: {
                         guest: {
@@ -67,6 +69,10 @@ export async function generateTickets(
             return {
                 ticketId: ticket._id.toHexString(),
                 ticketTypeId: orderedTicket.itemId,
+                ticketUniqueId: ticket.ticketUniqueId,
+                guestName: ticket.details.guest.guestName,
+                companyName: ticket.details.guest.companyName,
+                position: ticket.details.guest.position,
                 ticketType: ticketType.type,
                 unitPrice: ticketType.price,
                 ticketCode: ticket.ticketCode!,
@@ -79,6 +85,7 @@ export async function generateTickets(
 
     await services.generateTickets({
         orderId: order.id,
+        orderUniqueId: order.orderUniqueId,
         orderCallbackUrl: `${HTTP_SCHEME}://api.${process.env.HOST}/orders/${order.id}`,
         tickets,
         eventDetails: {

@@ -11,6 +11,7 @@ export type TicketStatus = z.infer<typeof ticketStatusSchema>;
 export const ticketSchema = z.object({
     _id: z.instanceof(ObjectId),
     ticketTypeId: z.string(),
+    ticketUniqueId: z.string(),
     eventId: z.string(),
     orderId: z.string(),
     status: ticketStatusSchema,

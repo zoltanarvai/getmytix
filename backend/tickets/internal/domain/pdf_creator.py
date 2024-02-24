@@ -5,10 +5,12 @@ from qrcode.image.pil import PilImage
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
+from tickets.internal.domain.order import Ticket
+
 
 class PDFCreator:
     @staticmethod
-    def create_pdf(event_name: str, start_date: str, location: str, ticket_type: str, ticket_code: str, qr_image: PilImage) -> io.BytesIO:
+    def create_pdf(event_name: str, start_date: str, location: str, ticket: Ticket, qr_image: PilImage) -> io.BytesIO:
         logging.info("Creating pdf ticket...")
 
         pdf_stream = io.BytesIO()
@@ -31,10 +33,27 @@ class PDFCreator:
 
         # Put event details on the left
         c.setFont("Helvetica", 14)
-        c.drawString(50, 640, f"Jegy tipus: {ticket_type}")
+        c.drawString(50, 640, f"Jegy típus: {ticket.ticket_type}")
 
         c.setFont("Helvetica", 14)
-        c.drawString(50, 660, f"Jegy kod: {ticket_code}")
+        c.drawString(50, 660, f"Jegy kód: {ticket.ticket_code}")
+
+        cursor = 660
+
+        if ticket.guest_name:
+            cursor += 20
+            c.setFont("Helvetica", 14)
+            c.drawString(50, cursor, f"Vendég náv: {ticket.guest_name}")
+
+        if ticket.company_name:
+            cursor += 20
+            c.setFont("Helvetica", 14)
+            c.drawString(50, cursor, f"Cég név: {ticket.company_name}")
+
+        if ticket.position:
+            cursor += 20
+            c.setFont("Helvetica", 14)
+            c.drawString(50, cursor, f"Beosztás: {ticket.position}")
 
         # Save PDF
         c.save()

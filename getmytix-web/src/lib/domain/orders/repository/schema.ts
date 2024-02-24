@@ -32,6 +32,7 @@ export type OrderItem = z.infer<typeof orderItemSchema>;
 
 export const orderSchema = z.object({
     _id: z.instanceof(ObjectId),
+    orderUniqueId: z.string(),
     shoppingCartId: z.string(),
     eventId: z.string(),
     customerDetails: z.object({

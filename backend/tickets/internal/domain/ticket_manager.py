@@ -37,9 +37,8 @@ class TicketManager:
             event_name=event_details.name,
             start_date=event_details.start_date.isoformat(),
             location=event_details.address.to_location(),
-            ticket_type=ticket.ticket_type,
             qr_image=qr_code_image,
-            ticket_code=ticket.ticket_code
+            ticket=ticket,
         )
 
         logging.info("PDF Generated")
@@ -75,10 +74,9 @@ class TicketManager:
 
         return url
 
-    def send_tickets(self, order: Order, ticket_info: list[tuple[str, Ticket]]):
+    def send_tickets(self, order: Order):
         self._ticket_mailer.send_tickets(
-            order=order,
-            ticket_infos=ticket_info
+            order=order
         )
 
         logging.info(f"Tickets sent to {order.customer_details.name} <{order.customer_details.email}>")

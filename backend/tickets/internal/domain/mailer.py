@@ -2,14 +2,14 @@ import logging
 
 from mailersend import emails
 
-from .order import Ticket, Order
+from .order import Order
 
 
 class TicketMailer:
     def __init__(self, api_key: str):
         self._api_key = api_key
 
-    def send_tickets(self, order: Order, ticket_infos: list[tuple[str, Ticket]]):
+    def send_tickets(self, order: Order):
         logging.info(f"Sending tickets to {order.customer_details.name} <{order.customer_details.email}>")
 
         mail = emails.NewEmail(self._api_key)
@@ -30,15 +30,8 @@ class TicketMailer:
             {
                 "email": "recipient@email.com",
                 "data": {
-                    "items": [
-                        {
-                            "price": f"{ticket.unit_price} Ft",
-                            "product": ticket.ticket_type,
-                            "download_link": ticket_url
-                        } for ticket_url, ticket in ticket_infos
-                    ],
                     "order": {
-                        "order_number": order.order_id,
+                        "order_number": order.order_unique_id,
                     },
                     "customer": {
                         "name": order.customer_details.name,
