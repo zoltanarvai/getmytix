@@ -31,6 +31,20 @@ export async function getOrder(orderId: string): Promise<Order> {
     };
 }
 
+export async function getOrderByUniqueId(uniqueId: string): Promise<Order> {
+    console.info("Getting order by uniqueId", uniqueId);
+
+    const order = await repository.getOrderByUniqueId(uniqueId);
+    if (!order) {
+        throw new Error(`Order with uniqueId ${uniqueId} not found`);
+    }
+
+    return {
+        id: order._id.toHexString(),
+        ...order,
+    };
+}
+
 export async function createOrder(
     shoppingCartId: string,
     customerDetails: CustomerOrderDetails

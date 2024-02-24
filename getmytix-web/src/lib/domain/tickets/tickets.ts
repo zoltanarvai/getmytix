@@ -24,6 +24,34 @@ export async function getTicketsForEvent(eventId: string): Promise<Ticket[]> {
     });
 }
 
+export async function getTicketsByOrderId(orderId: string): Promise<Ticket[]> {
+    console.info("Getting tickets for order", orderId);
+
+    const tickets = await repository.getTicketsForOrder(orderId);
+
+    return tickets.map((ticket) => {
+        const {_id, ...rest} = ticket;
+
+        return {
+            id: _id.toHexString(),
+            ...rest,
+        };
+    });
+}
+
+export async function getTicketByTicketUniqueId(ticketUniqueId: string): Promise<Ticket> {
+    console.info("Getting ticket by uniqueId", ticketUniqueId);
+
+    const ticket = await repository.getTicketByUniqueId(ticketUniqueId);
+
+    const {_id, ...rest} = ticket;
+
+    return {
+        id: _id.toHexString(),
+        ...rest,
+    };
+}
+
 export async function generateTickets(
     order: Order,
     event: events.Event
