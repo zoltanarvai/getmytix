@@ -34,8 +34,8 @@ export async function getShoppingCartById(
   try {
     const db = await getDB();
     const document = await db
-      .collection("shoppingCarts")
-      .findOne({ _id: new ObjectId(shoppingCartId) });
+        .collection("shoppingCarts")
+        .findOne({_id: new ObjectId(shoppingCartId)});
 
     if (!document) {
       console.log("No shopping cart found");
