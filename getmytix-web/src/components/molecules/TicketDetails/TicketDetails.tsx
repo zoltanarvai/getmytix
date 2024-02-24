@@ -75,7 +75,7 @@ export function TickeDetails(props: DetailsProps) {
                     <Input
                         maxLength={200}
                         placeholder="Vendég neve"
-                        className="text-md w-64 max-md:w-96"
+                        className="text-md w-full"
                         value={guestName}
                         onChange={onGuestNameChanged}
                     />
@@ -85,7 +85,7 @@ export function TickeDetails(props: DetailsProps) {
                     <Input
                         maxLength={200}
                         placeholder="Cég neve"
-                        className="text-md w-64 max-md:w-96"
+                        className="text-md w-full"
                         value={companyName}
                         onChange={onCompanyNameChanged}
                     />
@@ -95,7 +95,7 @@ export function TickeDetails(props: DetailsProps) {
                     <Input
                         maxLength={200}
                         placeholder="Betöltött pozíció"
-                        className="text-md w-64 max-md:w-96"
+                        className="text-md w-full"
                         value={position}
                         onChange={onPositionChanged}
                     />

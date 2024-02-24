@@ -22,8 +22,14 @@ export default function RootLayout({
         <Image
             src="/event_logo.png"
             className="ml-4 mt-6"
-            width={400}
-            height={400}
+            sizes="100vw"
+            width={500}
+            height={300}
+            style={{
+                width: '80%',
+                height: 'auto',
+                maxWidth: '350px'
+            }}
             alt="Figyelő konferenciák"
         />
         {children}
