@@ -1,9 +1,8 @@
-import Link from "next/link";
 import {notFound} from "next/navigation";
 import {TicketSelector} from "@/components/organisms";
-import {Button} from "@/components/ui/button";
 import {events, session, shoppingCart} from "@/lib/domain";
-import {PageTitles} from "@/components/molecules";
+import {PageTitles, ShoppingCartSubmit} from "@/components/molecules";
+import React from "react";
 
 type TicketProps = {
     params: {
@@ -35,7 +34,7 @@ export default async function Tickets({params: {subdomain}}: TicketProps) {
         <main className="flex min-h-screen flex-col max-w-screen-lg m-auto gap-2">
             <PageTitles title={event.name} subtitle={event.description}/>
 
-            <section className="flex flex-1 flex-col items-center justify-center mb-8">
+            <section className="flex flex-1 flex-col items-center justify-center mb-8 gap-8">
                 <TicketSelector
                     event={{
                         ...event,
@@ -48,16 +47,8 @@ export default async function Tickets({params: {subdomain}}: TicketProps) {
                     shoppingCartId={initialisedShoppingCart.id}
                     shoppingCartItems={initialisedShoppingCart.items}
                 />
-
-                {/*<Link className="mt-8" href={`checkout/${initialisedShoppingCart.id}`}>*/}
-                <Link className="mt-8" href={`ticket-details/${initialisedShoppingCart.id}`}>
-                    <Button
-                        className="text-xl px-6 py-6"
-                        disabled={initialisedShoppingCart.items.length == 0}
-                    >
-                        Tovább
-                    </Button>
-                </Link>
+                <ShoppingCartSubmit enabled={initialisedShoppingCart.items.length > 0}
+                                    shoppingCartId={initialisedShoppingCart.id}/>
             </section>
         </main>
     );
