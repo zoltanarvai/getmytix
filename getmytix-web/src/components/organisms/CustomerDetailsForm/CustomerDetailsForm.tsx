@@ -22,19 +22,19 @@ export function CustomerDetailsForm({
                                         onCustomerDetailsSubmitted,
                                     }: CustomerDetailsFormProps) {
     const [tosAccepted, setTosAccepted] = React.useState(false);
-    
+
     const form = useForm<CustomerData>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: "Zoltan Arvai",
-            street: "Magyar utca",
-            streetNumber: "38/a",
-            city: "Budapest",
-            zip: "1053",
-            state: "Pest",
-            country: "Magyarorszag",
-            phone: "435345435543",
-        },
+        // defaultValues: {
+        //     name: "Zoltan Arvai",
+        //     street: "Magyar utca",
+        //     streetNumber: "38/a",
+        //     city: "Budapest",
+        //     zip: "1053",
+        //     state: "Pest",
+        //     country: "Magyarorszag",
+        //     phone: "435345435543",
+        // },
     });
 
     const onCheckChanged = (checked: CheckedState) => {
