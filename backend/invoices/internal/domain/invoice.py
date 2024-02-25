@@ -64,8 +64,10 @@ class Invoice(BaseXmlModel, tag="xmlszamla", nsmap={'': "http://www.szamlazz.hu/
 
 class InvoiceResponse(BaseXmlModel, tag="xmlszamlavalasz", nsmap={"": "http://www.szamlazz.hu/xmlszamlavalasz"}):
     success: bool = element(tag="sikeres")
-    invoice_number: str | None = element(tag="szamlaszam")
-    invoice_net: float | None = element(tag="szamlanetto")
-    invoice_gross: float | None = element(tag="szamlabrutto")
-    outstanding_amount: float | None = element(tag="kintlevoseg")
-    customer_account_url: str | None = element(tag="vevoifiokurl", cdata=True)
+    invoice_number: str | None = element(tag="szamlaszam", default=None)
+    invoice_net: float | None = element(tag="szamlanetto", default=None)
+    invoice_gross: float | None = element(tag="szamlabrutto", default=None)
+    outstanding_amount: float | None = element(tag="kintlevoseg", default=None)
+    customer_account_url: str | None = element(tag="vevoifiokurl", cdata=True, default=None)
+    error_code: str | None = element(tag="hibakod", cdata=True, default=None)
+    error_message: str | None = element(tag="hibauzenet", cdata=True, default=None)

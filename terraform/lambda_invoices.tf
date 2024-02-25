@@ -88,9 +88,9 @@ resource "aws_lambda_function" "lambda_invoices" {
 
   environment {
     variables = {
-      INVOICES_DLQ_URL = aws_sqs_queue.invoices_dlq.url
-      INVOICES_API_KEY = var.invoices_api_key
-      WEBHOOKS_SECRET  = var.getmytix_webhook_secret
+      INVOICES_DLQ_URL  = aws_sqs_queue.invoices_dlq.url
+      INVOICE_AGENT_KEY = var.invoices_api_key
+      WEBHOOKS_SECRET   = var.getmytix_webhook_secret
     }
   }
 
