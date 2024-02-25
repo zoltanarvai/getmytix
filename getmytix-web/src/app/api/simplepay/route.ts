@@ -52,6 +52,10 @@ export async function POST(request: Request) {
         await orders.fulfill(order.id, validatedRequest.transactionId, "simplepay");
     }
 
+    if (validatedRequest.status === "TIMEOUT") {
+        await orders.cancel(order.id, validatedRequest.transactionId, 'simplepay');
+    }
+
     const responseBody = JSON.stringify({
         ...validatedRequest,
         receiveDate: dayjs().format("YYYY-MM-DDTHH:mm:ssZZ"), // "2019-09-09T14:46:20+0200",
