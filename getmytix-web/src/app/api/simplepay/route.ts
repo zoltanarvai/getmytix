@@ -16,6 +16,7 @@ const requestSchema = z.object({
         z.literal("REFUND"),
         z.literal("REVERSED"),
         z.literal("TIMEOUT"),
+        z.literal("NOTAUTHORIZED"),
     ]),
 });
 
@@ -53,7 +54,11 @@ export async function POST(request: Request) {
     }
 
     if (validatedRequest.status === "TIMEOUT") {
-        await orders.cancel(order.id, validatedRequest.transactionId, 'simplepay');
+        console.warn("Payment has timed out");
+    }
+
+    if (validatedRequest.status === "NOTAUTHORIZED") {
+        console.warn("Payment was not authorized");
     }
 
     const responseBody = JSON.stringify({
