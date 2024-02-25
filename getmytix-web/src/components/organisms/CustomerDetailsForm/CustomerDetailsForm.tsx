@@ -35,6 +35,16 @@ export function CustomerDetailsForm({
         //     country: "Magyarorszag",
         //     phone: "435345435543",
         // },
+        defaultValues: {
+            name: "",
+            street: "",
+            streetNumber: "",
+            city: "",
+            zip: "",
+            state: "",
+            country: "",
+            phone: "",
+        },
     });
 
     const onCheckChanged = (checked: CheckedState) => {
