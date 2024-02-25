@@ -7,7 +7,7 @@ import * as tickets from "../tickets";
 import * as repository from "./repository";
 
 export type Order = Domain<repository.OrderRecord>;
-export type CustomerOrderDetails = repository.OrderRecord["customerDetails"];
+export type CustomerOrderDetails = repository.CustomerDetailsRecord;
 
 export function isPaid(order: Order): boolean {
     return order.history.some((event) => event.event === "paid");

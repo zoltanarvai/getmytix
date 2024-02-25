@@ -13,7 +13,12 @@ variable "mailer_send_api_key" {
   description = "API key for mailer send service"
 }
 
-variable getmytix_webhook_secret {
+variable "getmytix_webhook_secret" {
   type        = string
   description = "Secret for the webhook URL"
+}
+
+variable "invoices_api_key" {
+  type        = string
+  description = "API key for invoices service"
 }

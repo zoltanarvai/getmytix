@@ -30,23 +30,28 @@ export const orderItemSchema = z.object({
 
 export type OrderItem = z.infer<typeof orderItemSchema>;
 
+export const customerDetailsSchema = z.object({
+    id: z.string(),
+    email: z.string(),
+    name: z.string(),
+    street: z.string(),
+    streetNumber: z.string(),
+    city: z.string(),
+    zip: z.string(),
+    state: z.string(),
+    country: z.string(),
+    phone: z.string().optional(),
+    taxNumber: z.string().optional(),
+})
+
+export type CustomerDetailsRecord = z.infer<typeof customerDetailsSchema>;
+
 export const orderSchema = z.object({
     _id: z.instanceof(ObjectId),
     orderUniqueId: z.string(),
     shoppingCartId: z.string(),
     eventId: z.string(),
-    customerDetails: z.object({
-        id: z.string(),
-        email: z.string(),
-        name: z.string(),
-        street: z.string(),
-        streetNumber: z.string(),
-        city: z.string(),
-        zip: z.string(),
-        state: z.string(),
-        country: z.string(),
-        phone: z.string().optional(),
-    }),
+    customerDetails: customerDetailsSchema,
     items: z.array(orderItemSchema),
     history: z.array(historyItemSchema).optional().default([]),
     createdAt: z.string(),
