@@ -227,8 +227,8 @@ export function CustomerDetailsForm({
                         <div className="mt-6 w-4/5 max-md:w-full m-auto">
                             <Checkbox id="terms" onCheckedChange={onCheckChanged}/>
                             <label htmlFor="terms" className="text-sm font-medium ml-2">
-                                Tudomásul veszem, hogy az MX Technologies Kft. ( 2084
-                                Pilisvörösvár, Kápolna utca 38/a) adatkezelő által a getmytix.io
+                                Tudomásul veszem, hogy a MediaWorks Hungary Zrt (Budapest, Üllői út 48, 1082) adatkezelő
+                                által a jegyvasarlas.figyelo.hu
                                 felhasználói adatbázisában tárolt alábbi személyes adataim
                                 átadásra kerülnek az OTP Mobil Kft., mint adatfeldolgozó
                                 részére. Az adatkezelő által továbbított adatok köre az alábbi:
@@ -244,7 +244,7 @@ export function CustomerDetailsForm({
 
                         <Button
                             type="submit"
-                            className="text-xl font-bold rounded-full px-6 py-6 self-center mt-8 w-44"
+                            className="text-xl font-bold px-6 py-6 self-center mt-8 w-44"
                             disabled={!tosAccepted}
                         >
                             Fizetés

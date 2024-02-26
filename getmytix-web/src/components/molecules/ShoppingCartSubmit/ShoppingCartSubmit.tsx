@@ -25,10 +25,10 @@ export function ShoppingCartSubmit(props: ShoppingCartSubmitProps) {
             <div>
                 <Checkbox id="terms" onCheckedChange={onCheckChanged}/>
                 <label htmlFor="terms" className="text-sm font-medium ml-2">
-                    Elfogadom az{" "}
+                    Elolvastam és elfogadom az{" "}
                     <span className="underline text-blue-600">
-                    <Link href="http://simplepay.hu/vasarlo-aff" target="_blank">
-                        adatkezelési nyilatkozatot.
+                    <Link href="https://rendezveny.figyelo.hu/2-adatvedelmi-tajekoztato" target="_blank">
+                        adatvédelmi tájékoztatót.
                     </Link>
                         </span>
                 </label>
@@ -37,7 +37,7 @@ export function ShoppingCartSubmit(props: ShoppingCartSubmitProps) {
             <Link className={`mt-8 ${!props.enabled || !tosAccepted ? "pointer-events-none" : ""}`}
                   href={`ticket-details/${props.shoppingCartId}`}>
                 <Button
-                    className="text-xl font-bold rounded-full px-6 py-6 mt-4 max-w-64"
+                    className="text-xl font-bold px-6 py-6 mt-4 max-w-64"
                     disabled={!props.enabled || !tosAccepted}
                 >
                     Tovább

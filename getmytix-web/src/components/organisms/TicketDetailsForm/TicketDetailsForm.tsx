@@ -47,7 +47,7 @@ export function TicketDetailsForm(props: TicketDetailsFormProps) {
                     item.position = updatedItem.position;
                 }}/>
             ))}
-            <Button className="text-xl font-bold rounded-full px-6 py-6 mt-4 max-w-64 self-center"
+            <Button className="text-xl font-bold px-6 py-6 mt-4 max-w-64 self-center"
                     onClick={onClick}>Tovább a Fizetéshez</Button>
         </div>
     )
