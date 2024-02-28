@@ -13,6 +13,8 @@ export async function generateInvoice(
     event: events.Event
 ): Promise<void> {
     console.info("Generating invoice for order", order.id);
+    const domain = event.clientInfo.domain;
+    const clientSlug = event.clientInfo.slug;
 
     const getTicketType = (ticketId: string) => {
         const ticketType = event.ticketTypes.find(
@@ -63,7 +65,7 @@ export async function generateInvoice(
             zip,
         },
         items: invoiceItems,
-        invoiceCallbackUrl: `${HTTP_SCHEME}://api.${process.env.HOST}/invoices/${newInvoiceUniqueId}`,
+        invoiceCallbackUrl: `${HTTP_SCHEME}://${domain}/api/${clientSlug}/invoices/${newInvoiceUniqueId}`,
     });
 
     const {_id, ...rest} = newInvoice;

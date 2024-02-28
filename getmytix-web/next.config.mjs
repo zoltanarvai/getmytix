@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ["networkingkonferencia.hu", "localhost", "framerusercontent.com"],
+        domains: ["networkingkonferencia.hu", "localhost", "framerusercontent.com", "egyertekesites.figyelo.hu"],
     },
 };
 

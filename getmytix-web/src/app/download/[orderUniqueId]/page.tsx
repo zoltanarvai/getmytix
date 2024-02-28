@@ -46,7 +46,7 @@ export default async function DownloadTickets(props: DownloadTicketsProps) {
                 <div className="flex flex-col gap-2">
                     {ticketsFromOrder.map((ticket, index) => (
                         <Link key={ticket.id}
-                              href={`${HTTP_SCHEME}://api.${process.env.HOST}/download/${ticket.ticketUniqueId}`}>
+                              href={`${HTTP_SCHEME}://${event.clientInfo.domain}/api/${event.clientInfo.slug}/download/${ticket.ticketUniqueId}`}>
                             <Button className="w-full">
                                 {ticket.details.ticketType.type} Jegy {index + 1}
                                 {ticket.details.guest.guestName ? ` - ${ticket.details.guest.guestName}` : ""}

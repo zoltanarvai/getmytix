@@ -57,6 +57,8 @@ export async function generateTickets(
     event: events.Event
 ): Promise<void> {
     console.info("Generating tickets for order", order.id);
+    const clientDomain = event.clientInfo.domain;
+    const clientSlug = event.clientInfo.slug
 
     const tickets = await Promise.all(
         order.items.map(async (orderedTicket) => {
@@ -104,9 +106,9 @@ export async function generateTickets(
                 ticketType: ticketType.type,
                 unitPrice: ticketType.price,
                 ticketCode: ticket.ticketCode!,
-                ticketCallbackUrl: `${HTTP_SCHEME}://api.${
-                    process.env.HOST
-                }/tickets/${ticket._id.toHexString()}`,
+                ticketCallbackUrl: `${HTTP_SCHEME}://${
+                    clientDomain
+                }/api/${clientSlug}/tickets/${ticket._id.toHexString()}`,
             };
         })
     );
@@ -114,7 +116,7 @@ export async function generateTickets(
     await services.generateTickets({
         orderId: order.id,
         orderUniqueId: order.orderUniqueId,
-        orderCallbackUrl: `${HTTP_SCHEME}://api.${process.env.HOST}/orders/${order.id}`,
+        orderCallbackUrl: `${HTTP_SCHEME}://${clientDomain}/api/${clientSlug}/orders/${order.id}`,
         tickets,
         eventDetails: {
             id: event.id,

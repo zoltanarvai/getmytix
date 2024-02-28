@@ -7,14 +7,16 @@ import {CustomerData, CustomerDetailsForm} from "../CustomerDetailsForm";
 type SubmitOrderProps = {
     subdomain: string;
     clientSlug: string;
+    clientDomain: string;
     shoppingCartId: string;
 };
 
-export function SubmitOrder({subdomain, clientSlug, shoppingCartId}: SubmitOrderProps) {
+export function SubmitOrder({subdomain, clientSlug, clientDomain, shoppingCartId}: SubmitOrderProps) {
     const onSubmit = async (data: CustomerData) => {
         const paymentResponse = await createOrder({
             subdomain,
             clientSlug,
+            clientDomain,
             shoppingCartId,
             customerDetails: {
                 name: data.name,

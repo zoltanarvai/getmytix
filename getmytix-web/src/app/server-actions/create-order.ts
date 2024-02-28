@@ -3,7 +3,6 @@
 import {z} from "zod";
 import {customers, orders, payment, session} from "@/lib/domain";
 
-const HOST = process.env.HOST || "localhost:3000";
 const SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
 
 const createOrderSchema = z.object({
@@ -20,6 +19,7 @@ const createOrderSchema = z.object({
     }),
     subdomain: z.string(),
     clientSlug: z.string(),
+    clientDomain: z.string(),
     shoppingCartId: z.string(),
 });
 
@@ -32,6 +32,7 @@ export async function createOrder(
     mode: "payment" | "confirmation";
 }> {
     console.info("Creating order", createOrderRequest);
+    const domain = createOrderRequest.clientDomain || "localhost:3000";
 
     const validRequest = createOrderSchema.parse(createOrderRequest);
 
@@ -86,7 +87,7 @@ export async function createOrder(
         orderId: orderId,
         customerEmail: customer.email,
         amount: totalAmount.toString(),
-        redirectBaseUrl: `${SCHEME}://${HOST}/${validRequest.clientSlug}/events/${validRequest.subdomain}`,
+        redirectBaseUrl: `${SCHEME}://${domain}/${validRequest.clientSlug}/events/${validRequest.subdomain}`,
         invoiceDetails: {
             name: validRequest.customerDetails.name,
             company: "",

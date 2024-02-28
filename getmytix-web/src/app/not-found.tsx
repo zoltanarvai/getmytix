@@ -8,7 +8,7 @@ export default function NotFound() {
             <PageTitles title="Hiba - 404" subtitle="Nem találtuk a keresett oldalt!"/>
 
             <section className="flex items-center justify-center">
-                <Link href="https://getmytix.io">
+                <Link href="https://getmytix.io/mw/events/innovacio2024/start">
                     <Button>
                         Vissza a kezdőoldalra
                     </Button>

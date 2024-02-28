@@ -15,7 +15,8 @@ export type TicketType = z.infer<typeof ticketTypeSchema>;
 
 export const clientInfoSchema = z.object({
     id: z.string(),
-    slug: z.string()
+    slug: z.string(),
+    domain: z.string()
 });
 
 export type ClientInfo = z.infer<typeof clientInfoSchema>;

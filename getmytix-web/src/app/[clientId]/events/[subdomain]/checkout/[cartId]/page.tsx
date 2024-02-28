@@ -50,7 +50,8 @@ export default async function Checkout({
             </PageSection>
 
             <PageSection title="Vásárló adatai" classNames="mt-8">
-                <SubmitOrder subdomain={event.subdomain} shoppingCartId={cartId} clientSlug={event.clientInfo.slug}/>
+                <SubmitOrder subdomain={event.subdomain} shoppingCartId={cartId} clientSlug={event.clientInfo.slug}
+                             clientDomain={event.clientInfo.domain}/>
             </PageSection>
 
             <div className="self-end">
