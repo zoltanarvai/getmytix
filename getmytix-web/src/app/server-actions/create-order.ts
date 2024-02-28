@@ -87,7 +87,7 @@ export async function createOrder(
         orderId: orderId,
         customerEmail: customer.email,
         amount: totalAmount.toString(),
-        redirectBaseUrl: `${SCHEME}://${domain}/${validRequest.clientSlug}/events/${validRequest.subdomain}`,
+        redirectBaseUrl: `${SCHEME}://${domain}/events/${validRequest.subdomain}`,
         invoiceDetails: {
             name: validRequest.customerDetails.name,
             company: "",

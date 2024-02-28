@@ -228,7 +228,7 @@ export function CustomerDetailsForm({
                             <Checkbox id="terms" onCheckedChange={onCheckChanged}/>
                             <label htmlFor="terms" className="text-sm font-medium ml-2">
                                 Tudomásul veszem, hogy a MediaWorks Hungary Zrt (Budapest, Üllői út 48, 1082) adatkezelő
-                                által a jegyvasarlas.figyelo.hu
+                                által a jegyertekesites.figyelo.hu
                                 felhasználói adatbázisában tárolt alábbi személyes adataim
                                 átadásra kerülnek az OTP Mobil Kft., mint adatfeldolgozó
                                 részére. Az adatkezelő által továbbított adatok köre az alábbi:

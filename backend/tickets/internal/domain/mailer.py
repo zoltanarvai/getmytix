@@ -31,7 +31,7 @@ class TicketMailer:
                 "email": order.customer_details.email,
                 "data": {
                     "order_number": order.order_id,
-                    "download_link": f"https://download.getmytix.io/{order.order_unique_id}",
+                    "download_link": f"https://jegyertekesites.figyelo.hu/download/{order.order_unique_id}",
                     "customer": {
                         "name": order.customer_details.name,
                     }
