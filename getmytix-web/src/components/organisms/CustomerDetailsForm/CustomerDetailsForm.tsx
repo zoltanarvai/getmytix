@@ -236,7 +236,8 @@ export function CustomerDetailsForm({
                                 által végzett adatfeldolgozási tevékenység jellege és célja a
                                 SimplePay Adatkezelési tájékoztatóban, az alábbi linken
                                 tekinthető meg:{" "}
-                                <Link href="http://simplepay.hu/vasarlo-aff" target="_blank">
+                                <Link href="http://simplepay.hu/vasarlo-aff" target="_blank"
+                                      className="underline cursor-pointer">
                                     http://simplepay.hu/vasarlo-aff
                                 </Link>
                             </label>

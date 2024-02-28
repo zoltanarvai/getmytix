@@ -29,7 +29,8 @@ export default async function TicketDetails({params: {subdomain, cartId}}: Ticke
             <PageTitles title={event.name} subtitle={event.description}/>
 
             <PageSection title="Jegyek">
-                <TicketDetailsForm shoppingCartItems={items} shoppingCartId={cartId}/>
+                <TicketDetailsForm shoppingCartItems={items} shoppingCartId={cartId} subdomain={event.subdomain}
+                                   clientSlug={event.clientInfo.slug}/>
             </PageSection>
         </main>
     );

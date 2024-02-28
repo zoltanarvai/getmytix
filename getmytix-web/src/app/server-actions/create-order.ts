@@ -19,6 +19,7 @@ const createOrderSchema = z.object({
         taxNumber: z.string().optional(),
     }),
     subdomain: z.string(),
+    clientSlug: z.string(),
     shoppingCartId: z.string(),
 });
 
@@ -73,7 +74,7 @@ export async function createOrder(
         console.info("Order is free, skipping payment");
 
         return {
-            redirectUrl: `/free-checkout-complete?orderId=${orderId}`,
+            redirectUrl: `/${validRequest.clientSlug}/events/${validRequest.subdomain}/free-checkout-complete?orderId=${orderId}`,
             mode: "confirmation",
         };
     }
@@ -85,7 +86,7 @@ export async function createOrder(
         orderId: orderId,
         customerEmail: customer.email,
         amount: totalAmount.toString(),
-        redirectBaseUrl: `${SCHEME}://${validRequest.subdomain}.${HOST}`,
+        redirectBaseUrl: `${SCHEME}://${HOST}/${validRequest.clientSlug}/events/${validRequest.subdomain}`,
         invoiceDetails: {
             name: validRequest.customerDetails.name,
             company: "",

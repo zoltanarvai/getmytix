@@ -7,6 +7,8 @@ import {useRouter} from "next/navigation";
 import {TickeDetails} from "@/components/molecules";
 
 type TicketDetailsFormProps = {
+    subdomain: string;
+    clientSlug: string;
     shoppingCartId: string;
     shoppingCartItems: {
         itemId: string;
@@ -35,7 +37,7 @@ export function TicketDetailsForm(props: TicketDetailsFormProps) {
             items,
         })
 
-        router.push(`/checkout/${props.shoppingCartId}`)
+        router.push(`/${props.clientSlug}/events/${props.subdomain}/checkout/${props.shoppingCartId}`)
     }
 
     return (
