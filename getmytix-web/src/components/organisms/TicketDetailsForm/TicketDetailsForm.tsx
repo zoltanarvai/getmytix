@@ -37,7 +37,7 @@ export function TicketDetailsForm(props: TicketDetailsFormProps) {
             items,
         })
 
-        router.push(`/${props.clientSlug}/events/${props.subdomain}/checkout/${props.shoppingCartId}`)
+        router.push(`/events/${props.subdomain}/checkout/${props.shoppingCartId}`)
     }
 
     return (
