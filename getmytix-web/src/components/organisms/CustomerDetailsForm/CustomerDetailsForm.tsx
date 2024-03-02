@@ -44,6 +44,7 @@ export function CustomerDetailsForm({
             state: "",
             country: "",
             phone: "",
+            taxNumber: "",
         },
     });
 
