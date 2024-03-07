@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react";
+import React, {useTransition} from "react";
 import {Button} from "@/components/ui/button";
 import {updateItemsInShoppingCart} from "@/app/server-actions/shopping-cart";
 import {useRouter} from "next/navigation";
@@ -21,6 +21,7 @@ type TicketDetailsFormProps = {
 
 export function TicketDetailsForm(props: TicketDetailsFormProps) {
     const router = useRouter();
+    const [isPending, setTransitioning] = useTransition();
 
     const onClick = async () => {
         const items = props.shoppingCartItems.map(item => ({
@@ -32,9 +33,11 @@ export function TicketDetailsForm(props: TicketDetailsFormProps) {
             }
         }))
 
-        await updateItemsInShoppingCart({
-            shoppingCartId: props.shoppingCartId,
-            items,
+        setTransitioning(async () => {
+            await updateItemsInShoppingCart({
+                shoppingCartId: props.shoppingCartId,
+                items,
+            });
         })
 
         router.push(`/events/${props.subdomain}/checkout/${props.shoppingCartId}`)
@@ -50,6 +53,7 @@ export function TicketDetailsForm(props: TicketDetailsFormProps) {
                 }}/>
             ))}
             <Button className="text-xl font-bold px-6 py-6 mt-4 max-w-64 self-center"
+                    aria-disabled={isPending}
                     onClick={onClick}>Tovább a Fizetéshez</Button>
         </div>
     )

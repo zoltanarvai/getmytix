@@ -25,7 +25,7 @@ export default async function TicketDetails({params: {subdomain, cartId}}: Ticke
     }))
 
     return (
-        <main className="flex flex-col max-w-screen-lg m-auto gap-2">
+        <main className="flex flex-col min-h-screen max-w-screen-lg m-auto gap-2">
             <PageTitles title={event.name} subtitle={event.description}/>
 
             <PageSection title="Jegyek">

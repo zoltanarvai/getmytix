@@ -3,6 +3,8 @@ import type {Metadata} from "next";
 import {GeistSans} from "geist/font/sans";
 import {Toaster} from "@/components/ui/toaster";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
 export const metadata: Metadata = {
     title: "GetMyTix",
@@ -17,7 +19,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
         <body
-            className={`min-h-screen bg-background antialiased mx-4 ${GeistSans.className}`}
+            className={`bg-background antialiased mt-4 ${GeistSans.className}`}
         >
         <Image
             src="/event_logo.png"
@@ -34,6 +36,14 @@ export default function RootLayout({
         />
         {children}
         <Toaster/>
+        <div className="flex justify-end max-md:flex-col gap-2 p-4 border-t-gray-200 border-t">
+            <Link href="https://rendezveny.figyelo.hu/1-aktualis-aszf" target="_blank" className="underline">
+                Általános szerződési feltételek
+            </Link>
+            <Link href="https://rendezveny.figyelo.hu/2-adatvedelmi-tajekoztato" target="_blank" className="underline">
+                Adatvédelmi tájékoztató
+            </Link>
+        </div>
         </body>
         </html>
     );

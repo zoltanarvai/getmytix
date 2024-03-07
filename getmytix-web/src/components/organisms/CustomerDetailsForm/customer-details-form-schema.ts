@@ -22,9 +22,12 @@ export const formSchema = z.object({
     country: z.string().min(2, {
         message: "Az országodnak legalább 2 karakternek kell lennie",
     }),
-    taxNumber: z.string().regex(/^\d{8}-\d{1}-\d{2}$/, {
-        message: "Hibás adószám. A várt formátum: XXXXXXXX-Y-ZZ",
-    }).optional(),
+    taxNumber: z.union([
+        z.string().regex(/^\d{8}-\d{1}-\d{2}$/, {
+            message: "Hibás adószám. A várt formátum: XXXXXXXX-Y-ZZ",
+        }),
+        z.literal("")
+    ]).optional(),
     phone: z.string().optional(),
 });
 

@@ -13,7 +13,7 @@ from tickets.internal.domain.order import Ticket
 class PDFCreator:
     def __init__(self, base_dir: str):
         self._base_dir = base_dir
-        self._logo_path = os.path.join(self._base_dir, "static", "logo.jpeg")
+        self._logo_path = os.path.join(self._base_dir, "static", "event_logo.jpg")
         self._logo_img = Image.open(self._logo_path)
 
     def create_pdf(self, event_name: str, start_date: str, location: str, ticket: Ticket, qr_image: PilImage) -> io.BytesIO:
@@ -68,7 +68,7 @@ class PDFCreator:
         aspect_ratio = original_height / original_width
 
         # Set the new width to 100 pixels and calculate the new height
-        logo_width = 100
+        logo_width = 200
         logo_height = aspect_ratio * logo_width
 
         logo_margin = 10  # Margin from the bottom right corner

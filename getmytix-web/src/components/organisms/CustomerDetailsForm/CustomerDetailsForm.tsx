@@ -16,10 +16,12 @@ import {CheckedState} from "@radix-ui/react-checkbox";
 
 type CustomerDetailsFormProps = {
     onCustomerDetailsSubmitted: (data: CustomerData) => void;
+    isPending: boolean;
 };
 
 export function CustomerDetailsForm({
                                         onCustomerDetailsSubmitted,
+                                        isPending,
                                     }: CustomerDetailsFormProps) {
     const [tosAccepted, setTosAccepted] = React.useState(false);
 
@@ -247,7 +249,7 @@ export function CustomerDetailsForm({
                         <Button
                             type="submit"
                             className="text-xl font-bold px-6 py-6 self-center mt-8 w-44"
-                            disabled={!tosAccepted}
+                            disabled={!tosAccepted || isPending}
                         >
                             Fizetés
                         </Button>
