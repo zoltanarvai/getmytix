@@ -37,7 +37,7 @@ class TicketManager:
         # Generate PDF
         pdf = self._pdf_creator.create_pdf(
             event_name=event_details.name,
-            start_date=event_details.start_date.isoformat(),
+            start_date=event_details.start_date.strftime('%Y.%m.%d. %H:%M'),
             location=event_details.address.to_location(),
             qr_image=qr_code_image,
             ticket=ticket,
