@@ -37,10 +37,12 @@ export default function RootLayout({
         {children}
         <Toaster/>
         <div className="flex justify-end max-md:flex-col gap-2 p-4 border-t-gray-200 border-t">
-            <Link href="https://rendezveny.figyelo.hu/1-aktualis-aszf" target="_blank" className="underline">
+            <Link href="https://figyelo.hu/wp-content/uploads/2024/02/9048812ASZFrendezveny.pdf" target="_blank"
+                  className="underline">
                 Általános szerződési feltételek
             </Link>
-            <Link href="https://rendezveny.figyelo.hu/2-adatvedelmi-tajekoztato" target="_blank" className="underline">
+            <Link href="https://figyelo.hu/wp-content/uploads/2024/02/9048816Adatvedelmitajekoztatorendezveny.pdf"
+                  target="_blank" className="underline">
                 Adatvédelmi tájékoztató
             </Link>
         </div>
