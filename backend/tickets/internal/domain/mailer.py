@@ -15,7 +15,7 @@ class TicketMailer:
         mail = emails.NewEmail(self._api_key)
 
         mail_from = {
-            "name": "GetMyTix",
+            "name": "Figyelő Konferenciák Powered By Világgazdaság",
             "email": "no-reply@getmytix.io",
         }
 
