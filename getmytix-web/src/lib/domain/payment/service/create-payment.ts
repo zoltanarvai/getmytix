@@ -79,7 +79,7 @@ export async function createPayment(
 
     const url = useSandbox ?
         "https://sandbox.simplepay.hu/payment/v2/start" :
-        "https://simplepay.hu/payment/v2/start";
+        "https://secure.simplepay.hu/payment/v2/start";
 
     const response = await sendRequest(
         message,
