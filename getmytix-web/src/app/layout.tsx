@@ -7,8 +7,8 @@ import Link from "next/link";
 import React from "react";
 
 export const metadata: Metadata = {
-    title: "GetMyTix",
-    description: "Sell tickets easily and securely",
+    title: "Évadnyitó Innovációs Konferencia 2024",
+    description: "Jegyvásárlás",
 };
 
 export default function RootLayout({
