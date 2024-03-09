@@ -1,6 +1,7 @@
 import * as uuid from "uuid";
 import {Domain} from "@/lib/types";
 import type {Order} from "../orders";
+import * as clients from "../clients";
 import * as events from "../events";
 import * as services from "./services";
 import * as repository from "./repository";
@@ -54,10 +55,11 @@ export async function getTicketByTicketUniqueId(ticketUniqueId: string): Promise
 
 export async function generateTickets(
     order: Order,
-    event: events.Event
+    event: events.Event,
+    client: clients.Client,
 ): Promise<void> {
     console.info("Generating tickets for order", order.id);
-    const clientDomain = event.clientInfo.domain;
+    const clientDomain = client.domain;
 
     const tickets = await Promise.all(
         order.items.map(async (orderedTicket) => {

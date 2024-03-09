@@ -2,7 +2,7 @@ import * as R from "remeda";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import {events, session, shoppingCart} from "@/lib/domain";
+import {clients, events, session, shoppingCart} from "@/lib/domain";
 import {ShoppingCart, SubmitOrder} from "@/components/organisms";
 import {PageSection, PageTitles} from "@/components/molecules";
 
@@ -18,10 +18,15 @@ export default async function Checkout({
                                        }: CheckoutProps) {
     const sessionId = session.getCurrentSessionId();
     const event = await events.getEventBySubdomain(subdomain);
-
     if (!sessionId || !event) {
         return notFound();
     }
+
+    const client = await clients.getClientById(event.clientInfo.id);
+    if (!client) {
+        return notFound();
+    }
+
 
     const shoppingCartItems = await shoppingCart.getShoppingCartItems(cartId);
 
@@ -50,8 +55,8 @@ export default async function Checkout({
             </PageSection>
 
             <PageSection title="Vásárló adatai" classNames="mt-8">
-                <SubmitOrder subdomain={event.subdomain} shoppingCartId={cartId} clientSlug={event.clientInfo.slug}
-                             clientDomain={event.clientInfo.domain}/>
+                <SubmitOrder subdomain={event.subdomain} shoppingCartId={cartId} clientSlug={client.slug}
+                             clientDomain={client.domain}/>
             </PageSection>
 
             <div className="self-end">

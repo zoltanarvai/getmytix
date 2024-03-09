@@ -1,5 +1,6 @@
 import * as uuid from "uuid";
 import {Domain} from "@/lib/types";
+import * as clients from "../clients";
 import * as events from "../events";
 import * as invoices from "../invoices";
 import * as shoppingCarts from "../shopping-cart";
@@ -166,8 +167,13 @@ export async function fulfill(
         throw new Error(`Event ${order.eventId} not found`);
     }
 
+    const client = await clients.getClientById(event.clientInfo.id);
+    if (!client) {
+        throw new Error(`Client ${event.clientInfo.id} cannot be found`);
+    }
+
     await tickets.generateTickets(order, event);
-    await invoices.generateInvoice(order, event);
+    await invoices.generateInvoice(order, event, client);
     await shoppingCarts.deleteCart(order.shoppingCartId);
 
     console.info("Order fulfilled", orderId);

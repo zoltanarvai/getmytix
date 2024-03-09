@@ -1,5 +1,5 @@
 import {notFound} from "next/navigation";
-import {events, shoppingCart} from "@/lib/domain";
+import {clients, events, shoppingCart} from "@/lib/domain";
 import {PageSection, PageTitles} from "@/components/molecules";
 import {TicketDetailsForm} from "@/components/organisms/TicketDetailsForm/TicketDetailsForm";
 
@@ -12,8 +12,12 @@ type TicketDetailsProps = {
 
 export default async function TicketDetails({params: {subdomain, cartId}}: TicketDetailsProps) {
     const event = await events.getEventBySubdomain(subdomain);
-
     if (!event) {
+        return notFound();
+    }
+
+    const client = await clients.getClientById(event.clientInfo.id);
+    if (!client) {
         return notFound();
     }
 
@@ -30,7 +34,7 @@ export default async function TicketDetails({params: {subdomain, cartId}}: Ticke
 
             <PageSection title="Jegyek">
                 <TicketDetailsForm shoppingCartItems={items} shoppingCartId={cartId} subdomain={event.subdomain}
-                                   clientSlug={event.clientInfo.slug}/>
+                                   clientSlug={client.slug}/>
             </PageSection>
         </main>
     );

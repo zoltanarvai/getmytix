@@ -3,6 +3,7 @@ import * as uuid from "uuid";
 import * as R from "remeda";
 import * as orders from "../orders";
 import * as events from "../events";
+import * as clients from "../clients";
 import * as services from "./services";
 import * as repository from "./repository";
 
@@ -10,10 +11,11 @@ const HTTP_SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
 
 export async function generateInvoice(
     order: orders.Order,
-    event: events.Event
+    event: events.Event,
+    client: clients.Client,
 ): Promise<void> {
     console.info("Generating invoice for order", order.id);
-    const domain = event.clientInfo.domain;
+    const domain = client.domain;
 
     const getTicketType = (ticketId: string) => {
         const ticketType = event.ticketTypes.find(
@@ -50,10 +52,10 @@ export async function generateInvoice(
         orderId: order.id,
         invoiceUniqueId: newInvoiceUniqueId,
         invoiceDate: dayjs().format("YYYY-MM-DD"),
-        invoicePrefix: "FITIX", // TODO get this from client data
+        invoicePrefix: client.invoicePrefix,
         seller: {
-            bank: "MKB BANK ZRT. SWIFT KÓD: MKKBHUHB",
-            accountNumber: "HU60 10300002-20108698-48820019",
+            bank: client.bank,
+            accountNumber: client.accountNumber,
         },
         billingDetails: {
             name,
