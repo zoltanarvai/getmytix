@@ -172,7 +172,7 @@ export async function fulfill(
         throw new Error(`Client ${event.clientInfo.id} cannot be found`);
     }
 
-    await tickets.generateTickets(order, event);
+    await tickets.generateTickets(order, event, client);
     await invoices.generateInvoice(order, event, client);
     await shoppingCarts.deleteCart(order.shoppingCartId);
 
