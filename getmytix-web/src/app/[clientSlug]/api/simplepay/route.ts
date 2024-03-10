@@ -54,11 +54,13 @@ export async function POST(request: Request) {
     }
 
     if (validatedRequest.status === "TIMEOUT") {
-        console.warn("Payment has timed out");
+        console.info("Payment has timed out");
+        await orders.cancel(order.id, validatedRequest.transactionId, "simplepay");
     }
 
     if (validatedRequest.status === "NOTAUTHORIZED") {
-        console.warn("Payment was not authorized");
+        console.info("Payment was not authorized");
+        await orders.cancel(order.id, validatedRequest.transactionId, "simplepay");
     }
 
     const responseBody = JSON.stringify({
