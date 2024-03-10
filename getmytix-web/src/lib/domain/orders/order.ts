@@ -48,6 +48,7 @@ export async function getOrderByUniqueId(uniqueId: string): Promise<Order> {
 
 export async function createOrder(
     shoppingCartId: string,
+    clientId: string,
     customerDetails: CustomerOrderDetails
 ): Promise<string> {
     console.info("Creating order", shoppingCartId, customerDetails);
@@ -60,6 +61,7 @@ export async function createOrder(
         eventId: shoppingCart.eventId,
         items: shoppingCart.items,
         shoppingCartId,
+        clientId,
         history: [
             {
                 timestamp: new Date().toUTCString(),
@@ -167,9 +169,9 @@ export async function fulfill(
         throw new Error(`Event ${order.eventId} not found`);
     }
 
-    const client = await clients.getClientById(event.clientInfo.id);
+    const client = await clients.getClientById(order.clientId);
     if (!client) {
-        throw new Error(`Client ${event.clientInfo.id} cannot be found`);
+        throw new Error(`Client ${order.clientId} cannot be found`);
     }
 
     await tickets.generateTickets(order, event, client);

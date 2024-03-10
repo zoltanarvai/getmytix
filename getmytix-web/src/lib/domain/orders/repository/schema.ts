@@ -51,6 +51,7 @@ export const orderSchema = z.object({
     orderUniqueId: z.string(),
     shoppingCartId: z.string(),
     eventId: z.string(),
+    clientId: z.string(),
     customerDetails: customerDetailsSchema,
     items: z.array(orderItemSchema),
     history: z.array(historyItemSchema).optional().default([]),

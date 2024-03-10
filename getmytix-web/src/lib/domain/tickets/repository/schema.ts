@@ -14,6 +14,7 @@ export const ticketSchema = z.object({
     ticketUniqueId: z.string(),
     eventId: z.string(),
     orderId: z.string(),
+    clientId: z.string(),
     status: ticketStatusSchema,
     ticketUrl: z.string().optional(),
     ticketCode: z.string().optional(),

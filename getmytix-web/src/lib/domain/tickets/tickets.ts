@@ -77,6 +77,7 @@ export async function generateTickets(
                 {
                     orderId: order.id,
                     eventId: event.id,
+                    clientId: client.id,
                     ticketTypeId: orderedTicket.itemId,
                     ticketUniqueId: uuid.v4(),
                     status: "created",
