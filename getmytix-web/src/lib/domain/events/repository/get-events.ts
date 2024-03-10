@@ -11,6 +11,7 @@ export const ticketTypeSchema = z.object({
     description: z.string(),
     containsProxyService: z.boolean(),
     proxyServiceValue: z.number().optional(),
+    hidden: z.boolean().default(false)
 });
 
 export type TicketType = z.infer<typeof ticketTypeSchema>;
