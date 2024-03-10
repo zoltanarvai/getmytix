@@ -1,11 +1,12 @@
 import {z} from "zod";
+import {clients, events, orders} from "@/lib/domain";
 
 const requestSchema = z.object({
     eventId: z.string(),
     orders: z.array(z.object({
         ticketTypeId: z.string(),
         fullName: z.string().optional(),
-        companyName: z.string().optional(),
+        companyName: z.string(),
         position: z.string().optional(),
         email: z.string(),
     }))
@@ -31,12 +32,24 @@ export async function POST(request: Request) {
 
     // get ticket id from URL
     const url = new URL(request.url);
-    const fragments = url.pathname.split("/");
+    const fragments = url.pathname.split("/").filter(fragment => fragment.length > 0);
     const clientSlug = fragments[0];
 
-    console.log(">>>> createOrderRequest", JSON.stringify(createOrderRequest, null, 4))
-    console.log(">>>> clientSlug", clientSlug);
+    const client = await clients.getClientBySlug(clientSlug);
+    if (!client) {
+        return Response.json({error: "No client found"}, {status: 400})
+    }
 
+    const event = await events.getEventById(createOrderRequest.eventId);
+    if (!event) {
+        return Response.json({error: "No client found"}, {status: 400})
+    }
 
+    // Create a bunch of orders
+    const orderIds = await orders.batchCreateOrder(client.id, createOrderRequest.eventId, createOrderRequest.orders);
+
+    // Fulfill them individually
+    await orders.batchFulfillOrders(orderIds, client, event);
+    
     return Response.json({status: "ok"});
 }

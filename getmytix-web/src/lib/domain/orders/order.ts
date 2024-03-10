@@ -46,6 +46,54 @@ export async function getOrderByUniqueId(uniqueId: string): Promise<Order> {
     };
 }
 
+export async function batchCreateOrder(
+    clientId: string,
+    eventId: string,
+    orderDetails: {
+        ticketTypeId: string;
+        fullName?: string;
+        companyName: string;
+        position?: string;
+        email: string;
+    }[]
+): Promise<string[]> {
+    console.info(`Creating orders for client ${clientId} and event ${eventId}`, clientId, orderDetails);
+
+    const orders: repository.CreateOrder[] = orderDetails.map(order => ({
+        customerDetails: {
+            id: "n/a",
+            email: order.email,
+            name: order.companyName,
+            street: "n/a",
+            streetNumber: "n/a",
+            city: "n/a",
+            zip: "n/a",
+            state: "n/a",
+            country: "n/a",
+        },
+        orderUniqueId: uuid.v4(),
+        eventId,
+        items: [{
+            itemId: order.ticketTypeId,
+            unitPrice: 0,
+            guestName: order.fullName,
+            companyName: order.companyName,
+            position: order.position,
+        }],
+        shoppingCartId: "n/a",
+        clientId,
+        history: [
+            {
+                timestamp: new Date().toUTCString(),
+                event: "created",
+            },
+        ],
+    }));
+
+    const createdOrderIds = await repository.batchCreateOrders(orders)
+    return createdOrderIds;
+}
+
 export async function createOrder(
     shoppingCartId: string,
     clientId: string,
@@ -179,6 +227,34 @@ export async function fulfill(
     await shoppingCarts.deleteCart(order.shoppingCartId);
 
     console.info("Order fulfilled", orderId);
+}
+
+export async function batchFulfillOrders(orderIds: string[], client: clients.Client, event: events.Event) {
+    console.info("batch fulfilling orders", orderIds);
+
+    for (let orderId of orderIds) {
+        const order = await getOrder(orderId);
+        if (!order) {
+            throw new Error(`Order ${orderId} not found`);
+        }
+
+        if (isPaid(order)) {
+            console.warn("Order already paid", orderId);
+            continue;
+        }
+
+        const historyItem: repository.HistoryItem = {
+            timestamp: new Date().toISOString(),
+            event: "paid"
+        };
+
+        await repository.addHistoryItem(orderId, historyItem);
+        await tickets.generateTickets(order, event, client);
+
+        console.info("Order fulfilled", orderId);
+    }
+
+    console.info("orders fulfilled");
 }
 
 export async function updateOrderStatus(
