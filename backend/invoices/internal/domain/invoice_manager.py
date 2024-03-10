@@ -34,7 +34,7 @@ class InvoiceManager:
                 final_invoice=False,
                 corrective_invoice=False,
                 proforma_invoice_request=False,
-                invoice_prefix=invoice_request.invoice_prefix,
+                invoice_prefix=invoice_request.invoice_prefix
             ),
             seller=Seller(
                 bank=invoice_request.seller.bank,
@@ -94,16 +94,16 @@ class InvoiceManager:
             gross_unit_price = item.unit_price
             net_unit_price = gross_unit_price / (1 + vat / 100)
             tax = (gross_unit_price - net_unit_price)
-
             items.append(Item(
-                description=item.item_type,
+                description=item.item_title,
                 quantity=item.quantity,
                 unit="db",
                 net_unit_price=net_unit_price,
                 tax_rate=vat,
                 net_value=net_unit_price * item.quantity,
                 tax_value=tax * item.quantity,
-                gross_value=gross_unit_price * item.quantity
+                gross_value=gross_unit_price * item.quantity,
+                comment=item.comment if item.comment else ""
             ))
 
         return items
