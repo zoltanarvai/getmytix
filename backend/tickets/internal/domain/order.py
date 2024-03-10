@@ -45,6 +45,7 @@ class Order(BaseModel):
     order_id: str = Field(alias="orderId")
     order_unique_id: str = Field(alias="orderUniqueId")
     order_callback_url: str = Field(alias="orderCallbackUrl")
+    order_download_url: str = Field(alias="orderDownloadUrl")
     tickets: list[Ticket]
     event_details: EventDetails = Field(alias="eventDetails")
     customer_details: CustomerDetails = Field(alias="customerDetails")

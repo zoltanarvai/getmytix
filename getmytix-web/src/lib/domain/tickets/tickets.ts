@@ -119,6 +119,7 @@ export async function generateTickets(
         orderId: order.id,
         orderUniqueId: order.orderUniqueId,
         orderCallbackUrl: `${HTTP_SCHEME}://${clientDomain}/api/orders/${order.id}`,
+        orderDownloadUrl: `${HTTP_SCHEME}://${clientDomain}/download/${order.orderUniqueId}`,
         tickets,
         eventDetails: {
             id: event.id,
