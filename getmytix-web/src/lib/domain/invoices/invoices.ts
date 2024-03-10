@@ -39,20 +39,25 @@ export async function generateInvoice(
             return {
                 itemId: ticketType.id,
                 itemType: ticketType.type,
+                itemTitle: `${event.name} - ${ticketType.type}`,
                 quantity: group.length,
                 unitPrice: ticketType.price,
+                containsProxyService: ticketType.containsProxyService,
+                comment: ticketType.containsProxyService ? `ebből catering: ${ticketType.proxyServiceValue} Ft + 27% ÁFA` : undefined,
             };
         })
     );
 
     const {name, street, streetNumber, city, zip, email, taxNumber} = order.customerDetails;
 
+    const containsProxyService = invoiceItems.some(p => p.containsProxyService);
     const newInvoiceUniqueId = uuid.v4();
     const newInvoice = await repository.createInvoice({
         orderId: order.id,
         invoiceUniqueId: newInvoiceUniqueId,
         invoiceDate: dayjs().format("YYYY-MM-DD"),
         invoicePrefix: client.invoicePrefix,
+        comment: containsProxyService ? "A számla közvetített szolgáltatást tartalmaz." : undefined,
         seller: {
             bank: client.bank,
             accountNumber: client.accountNumber,

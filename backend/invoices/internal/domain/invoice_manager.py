@@ -35,6 +35,8 @@ class InvoiceManager:
                 corrective_invoice=False,
                 proforma_invoice_request=False,
                 invoice_prefix=invoice_request.invoice_prefix,
+                comment=invoice_request.comment if invoice_request.comment else ""
+
             ),
             seller=Seller(
                 bank=invoice_request.seller.bank,
@@ -103,7 +105,7 @@ class InvoiceManager:
                 net_value=net_unit_price * item.quantity,
                 tax_value=tax * item.quantity,
                 gross_value=gross_unit_price * item.quantity,
-                comment_for_item=item.comment
+                comment=item.comment if item.comment else ""
             ))
 
         return items

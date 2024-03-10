@@ -34,6 +34,8 @@ class InvoiceRequest(BaseModel):
     billing_details: BillingDetails = Field(alias="billingDetails")
     items: list[Item] = Field(alias="items")
     invoice_callback_url: str = Field(alias="invoiceCallbackUrl"),
+    comment: str | None = Field(alias="comment", default=None)
+
 
     @staticmethod
     def from_json_string(json_string: str) -> 'InvoiceRequest':
