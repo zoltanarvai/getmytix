@@ -30,6 +30,15 @@ export default async function Tickets({params: {subdomain}}: TicketProps) {
     const availableQuantityPerTicketType =
         await events.getAvailableQuantityPerTicketType(event.id);
 
+    const availabeTicketTypes = event.ticketTypes
+        .filter(type => !type.hidden)
+        .map((ticketType) => ({
+                ...ticketType,
+                availableQuantity: availableQuantityPerTicketType[ticketType.id],
+                totalQuantity: ticketType.quantity,
+            })
+        );
+
     return (
         <main className="flex min-h-screen flex-col max-w-screen-lg m-auto gap-2">
             <PageTitles title={event.name} subtitle={event.description}/>
@@ -38,11 +47,7 @@ export default async function Tickets({params: {subdomain}}: TicketProps) {
                 <TicketSelector
                     event={{
                         ...event,
-                        availabeTicketTypes: event.ticketTypes.map((ticketType) => ({
-                            ...ticketType,
-                            availableQuantity: availableQuantityPerTicketType[ticketType.id],
-                            totalQuantity: ticketType.quantity,
-                        })),
+                        availabeTicketTypes,
                     }}
                     shoppingCartId={initialisedShoppingCart.id}
                     shoppingCartItems={initialisedShoppingCart.items}
