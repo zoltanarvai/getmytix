@@ -9,6 +9,7 @@ const ticketGenerationRequestSchema = z.object({
     orderId: z.string(),
     orderUniqueId: z.string(),
     orderCallbackUrl: z.string(),
+    orderDownloadUrl: z.string(),
     tickets: z.array(
         z.object({
             ticketUniqueId: z.string(),

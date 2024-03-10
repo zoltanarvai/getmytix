@@ -1,7 +1,7 @@
 "use server";
 
 import {z} from "zod";
-import {customers, orders, payment, session} from "@/lib/domain";
+import {clients, customers, orders, payment, session} from "@/lib/domain";
 
 const SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
 
@@ -47,14 +47,18 @@ export async function createOrder(
     }
 
     const customer = await customers.getCustomerById(currentSession.customerId);
-
     if (!customer) {
         throw new Error("Customer not found");
     }
 
+    const client = await clients.getClientBySlug(validRequest.clientSlug);
+    if (!client) {
+        throw new Error("Client not found");
+    }
+
     // At this point the shopping cart is already created explaining which ticket type the user wants to buy
     // and how many. Tickets are not reserved yet.
-    const orderId = await orders.createOrder(validRequest.shoppingCartId, {
+    const orderId = await orders.createOrder(validRequest.shoppingCartId, client.id, {
         id: customer.id,
         name: validRequest.customerDetails.name,
         email: customer.email,

@@ -1,5 +1,6 @@
 import * as uuid from "uuid";
 import {Domain} from "@/lib/types";
+import * as clients from "../clients";
 import * as events from "../events";
 import * as invoices from "../invoices";
 import * as shoppingCarts from "../shopping-cart";
@@ -47,6 +48,7 @@ export async function getOrderByUniqueId(uniqueId: string): Promise<Order> {
 
 export async function createOrder(
     shoppingCartId: string,
+    clientId: string,
     customerDetails: CustomerOrderDetails
 ): Promise<string> {
     console.info("Creating order", shoppingCartId, customerDetails);
@@ -59,6 +61,7 @@ export async function createOrder(
         eventId: shoppingCart.eventId,
         items: shoppingCart.items,
         shoppingCartId,
+        clientId,
         history: [
             {
                 timestamp: new Date().toUTCString(),
@@ -166,8 +169,13 @@ export async function fulfill(
         throw new Error(`Event ${order.eventId} not found`);
     }
 
-    await tickets.generateTickets(order, event);
-    await invoices.generateInvoice(order, event);
+    const client = await clients.getClientById(order.clientId);
+    if (!client) {
+        throw new Error(`Client ${order.clientId} cannot be found`);
+    }
+
+    await tickets.generateTickets(order, event, client);
+    await invoices.generateInvoice(order, event, client);
     await shoppingCarts.deleteCart(order.shoppingCartId);
 
     console.info("Order fulfilled", orderId);

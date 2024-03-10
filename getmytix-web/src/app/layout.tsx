@@ -8,7 +8,7 @@ import React from "react";
 
 export const metadata: Metadata = {
     title: "Évadnyitó Innovációs Konferencia 2024",
-    description: "Jegyvásárlás",
+    description: "Jegyvásárlás egyszerűen",
 };
 
 export default function RootLayout({

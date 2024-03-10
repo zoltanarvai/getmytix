@@ -1,3 +1,4 @@
+export * as clients from "./clients";
 export * as events from "./events";
 export * as tickets from "./tickets";
 export * as orders from "./orders";
