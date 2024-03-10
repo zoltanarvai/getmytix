@@ -48,6 +48,7 @@ class Item(BaseXmlModel, tag="tetel"):
     net_value: float = element(tag="nettoErtek")
     tax_value: float = element(tag="afaErtek")
     gross_value: float = element(tag="bruttoErtek")
+    comment_for_item: str | None = element(tag="megjegyzes", default="")
 
 
 class Items(BaseXmlModel, tag="tetelek"):

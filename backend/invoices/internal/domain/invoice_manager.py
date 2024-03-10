@@ -94,16 +94,16 @@ class InvoiceManager:
             gross_unit_price = item.unit_price
             net_unit_price = gross_unit_price / (1 + vat / 100)
             tax = (gross_unit_price - net_unit_price)
-
             items.append(Item(
-                description=item.item_type,
+                description=item.item_title,
                 quantity=item.quantity,
                 unit="db",
                 net_unit_price=net_unit_price,
                 tax_rate=vat,
                 net_value=net_unit_price * item.quantity,
                 tax_value=tax * item.quantity,
-                gross_value=gross_unit_price * item.quantity
+                gross_value=gross_unit_price * item.quantity,
+                comment_for_item=item.comment
             ))
 
         return items
