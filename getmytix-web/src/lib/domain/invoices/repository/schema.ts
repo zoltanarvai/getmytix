@@ -7,6 +7,7 @@ export const invoiceSchema = z.object({
     orderId: z.string(),
     invoiceDate: z.string(),
     invoicePrefix: z.string(),
+    comment: z.string().optional(),
     seller: z.object({
         bank: z.string(),
         accountNumber: z.string(),
@@ -23,8 +24,10 @@ export const invoiceSchema = z.object({
         z.object({
             itemId: z.string(),
             itemType: z.string(),
+            itemTitle: z.string(),
             quantity: z.number(),
             unitPrice: z.number(),
+            comment: z.string().optional(),
         })
     ),
     invoiceCallbackUrl: z.string(),

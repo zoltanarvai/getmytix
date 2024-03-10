@@ -10,6 +10,7 @@ const invoicingDetailsSchema = z.object({
     orderId: z.string(),
     invoiceDate: z.string(),
     invoicePrefix: z.string(),
+    comment: z.string().optional(),
     seller: z.object({
         bank: z.string(),
         accountNumber: z.string(),
@@ -26,8 +27,10 @@ const invoicingDetailsSchema = z.object({
         z.object({
             itemId: z.string(),
             itemType: z.string(),
+            itemTitle: z.string(),
             quantity: z.number(),
             unitPrice: z.number(),
+            comment: z.string().optional(),
         })
     ),
     invoiceCallbackUrl: z.string(),
