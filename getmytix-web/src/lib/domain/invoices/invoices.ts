@@ -39,7 +39,7 @@ export async function generateInvoice(
             return {
                 itemId: ticketType.id,
                 itemType: ticketType.type,
-                itemTitle: `${event.name} - ${ticketType.type}`,
+                itemTitle: `${event.name} - ${ticketType.type} Jegy`,
                 quantity: group.length,
                 unitPrice: ticketType.price,
                 containsProxyService: ticketType.containsProxyService,

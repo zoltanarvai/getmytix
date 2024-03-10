@@ -34,9 +34,7 @@ class InvoiceManager:
                 final_invoice=False,
                 corrective_invoice=False,
                 proforma_invoice_request=False,
-                invoice_prefix=invoice_request.invoice_prefix,
-                comment=invoice_request.comment if invoice_request.comment else ""
-
+                invoice_prefix=invoice_request.invoice_prefix
             ),
             seller=Seller(
                 bank=invoice_request.seller.bank,

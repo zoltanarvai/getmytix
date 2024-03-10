@@ -22,7 +22,6 @@ class Header(BaseXmlModel, tag="fejlec"):
     corrective_invoice: bool = element(tag="helyesbitoszamla")
     proforma_invoice_request: bool = element(tag="dijbekero")
     invoice_prefix: str = element(tag="szamlaszamElotag")
-    comment: str | None = element(tag="megjegyzes", default="")
 
 
 class Seller(BaseXmlModel, tag="elado"):
