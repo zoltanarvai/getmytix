@@ -85,6 +85,8 @@ export default function Scan() {
         if (ticketCode) {
             setNoSuchTicket(false);
             setScannedTicket(undefined);
+            setTicketCode("");
+            setScannedResult(undefined);
 
             const response = await fetch(`api/tickets/${ticketCode.toUpperCase()}/validate-code`);
             if (response.status === 404) {
@@ -99,20 +101,21 @@ export default function Scan() {
     return (
         <section className="flex flex-col mx-2 mt-4">
             <div className="h-1/2 w-full">
-                <video ref={videoEl} className="w-full h-full m-auto relative object-cover"></video>
-                <div ref={qrBoxEl} className="w-full left-0">
+                <video ref={videoEl}
+                       className="w-full h-full max-h-64 m-auto relative object-cover"></video>
+                <div ref={qrBoxEl} className="w-full max-h-64 left-0">
                     <img
                         src="/qr-frame.svg"
                         alt="Qr Frame"
-                        width={256}
-                        height={256}
+                        width={200}
+                        height={200}
                         className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
                     />
                 </div>
             </div>
             <div className="flex flex-col justify-items-center items-center my-4">
                 <h2 className="font-bold">Kód ellenőrzése</h2>
-                <Input type="text" onChange={handleCodeInputChange} className="w-2/3 mt-2"/>
+                <Input type="text" onChange={handleCodeInputChange} className="w-2/3 mt-2 text-md"/>
                 <Button onClick={handleCodeSubmit} className="w-2/3 mt-2" disabled={!ticketCode}>Ellenőriz</Button>
             </div>
             <div className="w-full m-auto border border-gray-200 my-2"/>
