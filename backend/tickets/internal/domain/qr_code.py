@@ -14,7 +14,7 @@ class QRCode:
 
     def generate(self, url: str) -> PilImage:
         logging.info(f"Generating QR Code for {url}")
-
+        self._qr.clear()
         self._qr.add_data(url)
         self._qr.make(fit=True)
 
