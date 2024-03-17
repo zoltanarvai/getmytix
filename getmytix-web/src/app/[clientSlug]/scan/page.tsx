@@ -49,6 +49,13 @@ export default function Scan() {
         };
     }, []);
 
+    useEffect(() => {
+        if (!qrOn)
+            alert(
+                "A kamera nem hozzáférhető. Kérem engedélyezze a kamera hozzáférést és frissítse be az oldalt."
+            );
+    }, [qrOn]);
+
     const onScanSuccess = (result: QrScanner.ScanResult) => {
         setScannedResult(result?.data);
     };
