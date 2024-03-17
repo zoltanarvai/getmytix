@@ -6,6 +6,11 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import type {TicketDetails} from "@/app/[clientSlug]/api/tickets/[ticketId]/validate/route";
 
+function isValidUUID(uuid: string) {
+    const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return regex.test(uuid);
+}
+
 export default function Scan() {
     const scanner = useRef<QrScanner>();
     const videoEl = useRef<HTMLVideoElement>(null);
@@ -67,6 +72,11 @@ export default function Scan() {
         setTicketCode("");
         setNoSuchTicket(false);
 
+        if (!isValidUUID(ticketId)) {
+            setNoSuchTicket(true);
+            return;
+        }
+
         const response = await fetch(`api/tickets/${ticketId}/validate`);
         if (response.status === 404) {
             setNoSuchTicket(true);
@@ -120,7 +130,7 @@ export default function Scan() {
             </div>
             <div className="w-full m-auto border border-gray-200 my-2"/>
             {noSuchTicket && (
-                <div className="w-full">
+                <div className="w-full my-4">
                     <p className="font-bold text-center">A jegy nem található!</p>
                 </div>
             )}
