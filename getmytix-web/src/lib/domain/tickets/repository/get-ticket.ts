@@ -52,5 +52,16 @@ export async function getTicketByUniqueId(
     return ticketSchema.parse(ticket);
 }
 
+export async function getTicketByCode(
+    ticketCode: string
+): Promise<TicketRecord> {
+    const db = await getDB();
+    const ticket = await db
+        .collection("tickets")
+        .findOne({ticketCode: ticketCode});
+
+    return ticketSchema.parse(ticket);
+}
+
 
 

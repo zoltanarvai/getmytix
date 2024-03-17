@@ -53,6 +53,19 @@ export async function getTicketByTicketUniqueId(ticketUniqueId: string): Promise
     };
 }
 
+export async function getTicketByCode(ticketCode: string): Promise<Ticket> {
+    console.info("Getting ticket by ticketCode", ticketCode);
+
+    const ticket = await repository.getTicketByCode(ticketCode);
+
+    const {_id, ...rest} = ticket;
+
+    return {
+        id: _id.toHexString(),
+        ...rest,
+    };
+}
+
 export async function generateTickets(
     order: Order,
     event: events.Event,
