@@ -1,10 +1,11 @@
 import "./globals.css";
 import type {Metadata} from "next";
+import React from "react";
+import {Analytics} from "@vercel/analytics/react"
 import {GeistSans} from "geist/font/sans";
 import {Toaster} from "@/components/ui/toaster";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export const metadata: Metadata = {
     title: "Évadnyitó Innovációs Konferencia 2024",
@@ -36,6 +37,7 @@ export default function RootLayout({
         />
         {children}
         <Toaster/>
+        <Analytics/>
         <div className="flex justify-end max-md:flex-col gap-2 p-4 border-t-gray-200 border-t">
             <Link href="https://figyelo.hu/wp-content/uploads/2024/02/9048812ASZFrendezveny.pdf" target="_blank"
                   className="underline">

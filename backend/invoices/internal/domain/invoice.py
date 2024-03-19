@@ -16,6 +16,7 @@ class Header(BaseXmlModel, tag="fejlec"):
     payment_method: Literal['Bankkártya'] = element(tag="fizmod")
     currency: Literal['HUF'] = element(tag="penznem")
     invoice_language: Literal['hu'] = element(tag="szamlaNyelve")
+    comment: str | None = element(tag="megjegyzes", default="")
     order_number: str = element(tag="rendelesSzam")
     advance_invoice: bool = element(tag="elolegszamla")
     final_invoice: bool = element(tag="vegszamla")

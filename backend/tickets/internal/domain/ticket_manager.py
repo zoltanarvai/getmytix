@@ -30,7 +30,7 @@ class TicketManager:
 
     def generate_ticket(self, event_details: EventDetails, ticket: Ticket) -> io.BytesIO:
         # Generate QR Code
-        qr_code_image = self._qr_code.generate(ticket.ticket_id)
+        qr_code_image = self._qr_code.generate(ticket.ticket_unique_id)
 
         logging.info("QR Code Ready")
 
