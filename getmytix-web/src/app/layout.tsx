@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-    title: "Évadnyitó Innovációs Konferencia 2024",
+    title: "Csak egészség legyen!",
     description: "Jegyvásárlás egyszerűen",
 };
 
