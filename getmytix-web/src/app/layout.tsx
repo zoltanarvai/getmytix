@@ -27,10 +27,11 @@ export default function RootLayout({
             className="ml-4 mt-6"
             sizes="100vw"
             width={500}
-            height={300}
+            height={267}
             style={{
-                width: '80%',
-                height: 'auto',
+                width: 'auto',
+                height: '80%',
+                maxHeight: '100px',
                 maxWidth: '350px'
             }}
             alt="Figyelő konferenciák"
