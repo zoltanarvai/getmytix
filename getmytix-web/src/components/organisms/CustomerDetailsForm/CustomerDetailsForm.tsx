@@ -27,30 +27,30 @@ export function CustomerDetailsForm({
 
     const form = useForm<CustomerData>({
         resolver: zodResolver(formSchema),
+        // defaultValues: {
+        //     email: "zoltan.arvai@live.com",
+        //     name: "Zoltan Arvai",
+        //     street: "Magyar utca",
+        //     streetNumber: "38/a",
+        //     city: "Budapest",
+        //     zip: "1053",
+        //     state: "Pest",
+        //     country: "Magyarorszag",
+        //     phone: "435345435543",
+        //     taxNumber: "12345678-1-12"
+        // },
         defaultValues: {
             email: "",
-            name: "Zoltan Arvai",
-            street: "Magyar utca",
-            streetNumber: "38/a",
-            city: "Budapest",
-            zip: "1053",
-            state: "Pest",
-            country: "Magyarorszag",
-            phone: "435345435543",
-            taxNumber: "12345678-1-12"
+            name: "",
+            street: "",
+            streetNumber: "",
+            city: "",
+            zip: "",
+            state: "",
+            country: "",
+            phone: "",
+            taxNumber: "",
         },
-        // defaultValues: {
-        //     email: "",
-        //     name: "",
-        //     street: "",
-        //     streetNumber: "",
-        //     city: "",
-        //     zip: "",
-        //     state: "",
-        //     country: "",
-        //     phone: "",
-        //     taxNumber: "",
-        // },
     });
 
     const onCheckChanged = (checked: CheckedState) => {
