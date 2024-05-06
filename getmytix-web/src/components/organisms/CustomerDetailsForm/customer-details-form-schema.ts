@@ -4,6 +4,9 @@ export const formSchema = z.object({
     name: z.string().min(3, {
         message: "A nevednek legalább 3 karakternek kell lennie",
     }),
+    email: z.string().email({
+        message: "Helytelen e-mail cím formátum",
+    }),
     street: z.string().min(3, {
         message: "A címednek legalább 3 karakternek kell lennie",
     }),

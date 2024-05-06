@@ -23,6 +23,7 @@ export function SubmitOrder({subdomain, clientSlug, clientDomain, shoppingCartId
                 shoppingCartId,
                 customerDetails: {
                     name: data.name,
+                    email: data.email,
                     street: data.street,
                     streetNumber: data.streetNumber,
                     city: data.city,

@@ -28,6 +28,7 @@ export function CustomerDetailsForm({
     const form = useForm<CustomerData>({
         resolver: zodResolver(formSchema),
         // defaultValues: {
+        //     email: "zoltan.arvai@live.com",
         //     name: "Zoltan Arvai",
         //     street: "Magyar utca",
         //     streetNumber: "38/a",
@@ -36,8 +37,10 @@ export function CustomerDetailsForm({
         //     state: "Pest",
         //     country: "Magyarorszag",
         //     phone: "435345435543",
+        //     taxNumber: "12345678-1-12"
         // },
         defaultValues: {
+            email: "",
             name: "",
             street: "",
             streetNumber: "",
@@ -156,6 +159,23 @@ export function CustomerDetailsForm({
                             </Column>
 
                             <Column>
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel className="font-bold">E-mail cím</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="E-mail cím"
+                                                    className="text-left text-md"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="zip"

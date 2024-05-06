@@ -7,6 +7,7 @@ const SCHEME = process.env.NODE_ENV === "production" ? "https" : "http";
 
 const createOrderSchema = z.object({
     customerDetails: z.object({
+        email: z.string(),
         name: z.string(),
         street: z.string(),
         streetNumber: z.string(),
@@ -46,10 +47,12 @@ export async function createOrder(
         throw new Error("Session not found");
     }
 
-    const customer = await customers.getCustomerById(currentSession.customerId);
+    let customer = await customers.getCustomerByEmail(createOrderRequest.customerDetails.email);
     if (!customer) {
-        throw new Error("Customer not found");
+        customer = await customers.createCustomer(createOrderRequest.customerDetails.email);
     }
+
+    await session.updateSessionWithCustomer(currentSessionId, customer.id);
 
     const client = await clients.getClientBySlug(validRequest.clientSlug);
     if (!client) {
