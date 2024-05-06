@@ -27,27 +27,30 @@ export function CustomerDetailsForm({
 
     const form = useForm<CustomerData>({
         resolver: zodResolver(formSchema),
-        // defaultValues: {
-        //     name: "Zoltan Arvai",
-        //     street: "Magyar utca",
-        //     streetNumber: "38/a",
-        //     city: "Budapest",
-        //     zip: "1053",
-        //     state: "Pest",
-        //     country: "Magyarorszag",
-        //     phone: "435345435543",
-        // },
         defaultValues: {
-            name: "",
-            street: "",
-            streetNumber: "",
-            city: "",
-            zip: "",
-            state: "",
-            country: "",
-            phone: "",
-            taxNumber: "",
+            email: "",
+            name: "Zoltan Arvai",
+            street: "Magyar utca",
+            streetNumber: "38/a",
+            city: "Budapest",
+            zip: "1053",
+            state: "Pest",
+            country: "Magyarorszag",
+            phone: "435345435543",
+            taxNumber: "12345678-1-12"
         },
+        // defaultValues: {
+        //     email: "",
+        //     name: "",
+        //     street: "",
+        //     streetNumber: "",
+        //     city: "",
+        //     zip: "",
+        //     state: "",
+        //     country: "",
+        //     phone: "",
+        //     taxNumber: "",
+        // },
     });
 
     const onCheckChanged = (checked: CheckedState) => {
@@ -156,6 +159,23 @@ export function CustomerDetailsForm({
                             </Column>
 
                             <Column>
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel className="font-bold">E-mail cím</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="E-mail cím"
+                                                    className="text-left text-md"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="zip"
