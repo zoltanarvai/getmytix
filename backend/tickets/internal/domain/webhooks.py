@@ -32,7 +32,7 @@ class Webhooks:
                            payload: Optional[dict] = {}):
         logging.info(f"Updating order {order_id} to status {status} with payload {payload}")
 
-        response = await self._httpx_client.post(order_callback_url, json={
+        response = await self._httpx_client.post(order_callback_url, timeout=60, json={
             "status": status,
             **payload
         })

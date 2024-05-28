@@ -8,7 +8,12 @@ export async function addHistoryItem(
 ): Promise<void> {
     try {
         const entry = historyItemSchema.parse(historyItem);
+        console.info("addHistoryItem - getting db connection")
+
         const db = await getDB();
+
+        console.info("addHistoryItem - db connection estabilished")
+
         await db.collection("orders").updateOne(
             {_id: new ObjectId(orderId)},
             {
